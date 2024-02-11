@@ -11,34 +11,6 @@ const Ventas = () => {
 
   const { register, handleSubmit } = useForm()
 
-  const [factura, setFactura] = useState();
-  const [fecha, setFecha] = useState();
-  const [almacen, setAlmacen] = useState();
-  const [pago, setPago] = useState();
-  const [metodo, setMetodo] = useState();
-  const [redesSociales, setRedesSociales] = useState();
-  const [nombreRedesSociales, setNombreRedesSociales] = useState();
-
-  const [articulo1, setArticulo1] = useState("");
-  const [cantidad1, setCantidad1] = useState(0);
-  const [precio1, setPrecio1] = useState(0);
-
-  const [articulo2, setArticulo2] = useState("");
-  const [cantidad2, setCantidad2] = useState(0);
-  const [precio2, setPrecio2] = useState(0);
-
-  const [articulo3, setArticulo3] = useState("");
-  const [cantidad3, setCantidad3] = useState(0);
-  const [precio3, setPrecio3] = useState(0);
-
-  const [articulo4, setArticulo4] = useState("");
-  const [cantidad4, setCantidad4] = useState(0);
-  const [precio4, setPrecio4] = useState(0);
-
-  const [articulo5, setArticulo5] = useState("");
-  const [cantidad5, setCantidad5] = useState(0);
-  const [precio5, setPrecio5] = useState(0);
-
   let venta = {
     "factura": factura,
     "fecha": fecha,
@@ -101,6 +73,7 @@ const Ventas = () => {
           <ModalHeader toggle={toggle}><i className="bi bi-cart-plus"> </i>Registrar venta</ModalHeader>
           <ModalBody>
             <Form onSubmit={handleSubmit((data) => {
+
               console.log(data)
             })}>
               <FormGroup row>
@@ -125,6 +98,8 @@ const Ventas = () => {
               </FormGroup>
               <p>Articulos</p>
               <div className="tabla-articulos">
+
+                {/* TABLA DE ARTICULOS FACTURA */}
                 <Table
                   responsive
                   size="sm"
@@ -140,17 +115,14 @@ const Ventas = () => {
                     <tr>
                       <td>
                         <Input
-                          name="cantidad1"
+                          {...registerArticulos("cantidad1")}
                           type="number"
-                          onChange={(e) => setCantidad1(e.target.value)}
                         />
                       </td>
                       <td>
                         <Input
-                          id="articulo1"
-                          name="articulo1"
+                          {...registerArticulos("articulo1")}
                           type="select"
-                          onChange={(e) => setArticulo1(e.target.value)}
                         >
                           <option value=""></option>
                           <option value="">Asador de campana</option>
@@ -162,9 +134,8 @@ const Ventas = () => {
                       </td>
                       <td>
                         <Input
-                          name="precio1"
+                          {...registerArticulos("precio")}
                           type="number"
-                          onChange={(e) => setPrecio1(e.target.value)}
                         />
                       </td>
                     </tr>
@@ -285,6 +256,8 @@ const Ventas = () => {
 
                   </tbody>
                 </Table>
+                {/*FIN TABLA DE ARTICULOS FACTURA */}
+
               </div>
               <FormGroup>
                 <label htmlFor="pago">Pago</label>
@@ -300,9 +273,9 @@ const Ventas = () => {
                 </select>
               </FormGroup>
               <FormGroup >
-                <div class="form-check form-switch">
-                  <input {...register("redesSociales")} class="form-check-input" type="checkbox" role="switch" onChange={handleRedes} />
-                  <label class="form-check-label" for="flexSwitchCheckDefault">Redes Sociales</label>
+                <div className="form-check form-switch">
+                  <input {...register("redesSociales")} className="form-check-input" type="checkbox" role="switch" onChange={handleRedes} />
+                  <label className="form-check-label" htmlFor="flexSwitchCheckDefault">Redes Sociales</label>
                 </div>
               </FormGroup>
               <FormGroup style={{ display: redesShow }}>
