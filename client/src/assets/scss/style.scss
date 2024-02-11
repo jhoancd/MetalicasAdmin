@@ -1,0 +1,57 @@
+@import "variables";
+
+@import "~bootstrap/scss/bootstrap";
+@import "~bootstrap-icons/font/bootstrap-icons.scss";
+@import "./layout/sidebar";
+@import "./layout/container";
+
+.tabla {
+    font-size: 10pt;
+}
+
+.separar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.icono-historial {
+    border: 1px solid #111111;
+    border-radius: 100%;
+}
+
+.modal-content {
+    background-color: #fff !important;
+}
+
+.groupText {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+
+    span {
+        line-height: 18px;
+        color: #a0a0a0;
+        font-size: 14px;
+    }
+
+    b {
+        color: #111;
+        font-size: 16px;
+    }
+}
+
+.articulos {
+    .table {
+        font-size: 14px;
+        line-height: 16px;
+
+        p {
+            margin: 0 !important;
+        }
+    }
+}
+
+.form-label {
+    margin-bottom: 0 !important;
+}

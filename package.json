@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "html-react-parser": "^5.1.2",
+    "moment": "^2.30.1"
+  }
+}
