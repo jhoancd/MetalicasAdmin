@@ -4,10 +4,17 @@ import { useForm } from 'react-hook-form';
 import {
   Col, Table, Card, CardTitle, CardBody, Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, InputGroupText, InputGroup
 } from "reactstrap";
+import toast, { Toaster } from 'react-hot-toast';
 
 
 
 const Ventas = () => {
+
+  const notify = (msg) => toast.success(msg);
+  const notifyError = (msg) => toast.error(msg);
+
+  const [ventas, setVentas] = useState([])
+  const [detallesFactura, setDetallesFactura] = useState([])
 
   // FORMATEAR PESO
   const moneda = (val) => {
@@ -44,17 +51,17 @@ const Ventas = () => {
 
   const data = watch()
 
-  const sum = (data) => {
-    let mul1 = data.items.item1.precio * data.items.item1.cantidad
-    let mul2 = data.items.item2.precio * data.items.item2.cantidad
-    let mul3 = data.items.item3.precio * data.items.item3.cantidad
-    let mul4 = data.items.item4.precio * data.items.item4.cantidad
-    let mul5 = data.items.item5.precio * data.items.item5.cantidad
+  const sum = (n) => {
+    let mul1 = n.items.item1.precio * n.items.item1.cantidad
+    let mul2 = n.items.item2.precio * n.items.item2.cantidad
+    let mul3 = n.items.item3.precio * n.items.item3.cantidad
+    let mul4 = n.items.item4.precio * n.items.item4.cantidad
+    let mul5 = n.items.item5.precio * n.items.item5.cantidad
 
     return mul1 + mul2 + mul3 + mul4 + mul5
   }
 
-  const [cantidad, precio] = watch(["items.item1.cantidad", "items.item1.precio"])
+  const pago = watch("pago")
 
   const [redesShow, setRedesShow] = useState("none")
   const handleRedes = () => {
@@ -74,9 +81,82 @@ const Ventas = () => {
   const [modalFactura, setModalFactura] = useState(false);
   const toggleFactura = () => setModalFactura(!modalFactura);
 
+  // QUERY HISTORIAL
+  const registrarHistorial = (tipo, almacen, descripcion) => {
+    let fecha = new Date()
+    let hora24, hora12, hora;
+    function addZero(i) {
+      if (i < 10) { i = "0" + i }
+      return i;
+    }
+    hora24 = hora12 = new Date().getHours();
+    if (hora24 > 12) {
+      hora12 -= (hora24 - 12) + 1;
+      hora = hora12 + ":" + new Date().getMinutes() + " pm"
+    } else {
+      hora = hora12 + ":" + new Date().getMinutes() + " am"
+    }
 
+    let fechaText = fecha.toLocaleString("es-ES", { weekday: "short", year: "numeric", month: "short", day: "numeric" }) + " a las " + addZero(hora);
+
+    Axios.post("http://192.168.20.41:3001/registrarHistorial", {
+      almacenHistorial: almacen,
+      descripcionHistorial: descripcion,
+      fechaHistorial: fechaText,
+      tipoHistorial: tipo
+    }).catch((err) => {
+      notifyError(`Error al registrar historial: ${err}`);
+    })
+  }
+
+  // QUERY AGREGAR VENTA
+  const agregarVenta = (data) => {
+    Axios.post("http://192.168.20.41:3001/agregarVenta", {
+      data: data
+    }).then(() => {
+      notify("Agregado correctamente");
+      toggle()
+      registrarHistorial(
+        "Venta", data.almacen,
+        `Se realizo venta de <b>${data.items.item1.articulo}</b> por un valor de ${data.items.item1.precio}`)
+    }).catch((err) => {
+      notifyError(`Error al agregar inventario: ${err}`);
+    })
+  }
+
+  // QUERY OBTENER VENTA
+  const obtenerVentas = () => {
+    Axios.get("http://192.168.20.41:3001/obtenerVentas").then((res) => {
+      setVentas(res.data)
+    }).catch((err) => {
+      notifyError(`Error al obtener ventas: ${err}`);
+    })
+  }
+
+  useEffect(() => {
+    obtenerVentas()
+  })
   return (
     <div>
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        gutter={8}
+        containerClassName=""
+        containerStyle={{}}
+        toastOptions={{
+          // Define default options
+          className: '',
+          duration: 5000,
+          success: {
+            duration: 3000,
+            theme: {
+              primary: 'green',
+              secondary: 'black',
+            },
+          },
+        }}
+      />
 
       {/* MODAL REGISTRAR VENTA */}
       <div>
@@ -89,7 +169,7 @@ const Ventas = () => {
               <FormGroup row>
                 <Col xs={6} md={6}>
                   <label htmlFor="factura">Factura</label>
-                  <input {...register("factura")} type="number" className="form-control" required />
+                  <input {...register("factura", { valueAsNumber: true })} type="number" className="form-control" required />
                 </Col>
                 <Col xs={6} md={6}>
                   <label htmlFor="fecha">Fecha</label>
@@ -301,11 +381,12 @@ const Ventas = () => {
 
           </ModalBody>
           <ModalFooter>
+            <span style={{ padding: "0 4px" }} className={`rounded-pill ${sum(data) <= pago ? "text-bg-success" : "text-bg-warning"}`}><i className={`bi ${sum(data) <= pago ? "bi-check-circle" : "bi-exclamation-circle"}`}> </i></span>
             <Button color="outline-danger" onClick={toggle}>
               <i className="bi bi-x"> </i> Cancelar
             </Button>
             <Button color="primary" type="submit" onClick={handleSubmit((data) => {
-              console.log(data)
+              agregarVenta(data)
             })}>
               <i className="bi bi-check"> </i> Guardar
             </Button>{' '}
@@ -314,26 +395,30 @@ const Ventas = () => {
       </div>
 
       {/* MODAL FACTURA */}
-      <div>
+      {/* <div>
         <Modal isOpen={modalFactura} toggle={toggleFactura} fullscreen="sm" size="lg" scrollable={false}>
           <ModalHeader toggle={toggleFactura}> <i className="bi bi-file-earmark-text"> </i> Detalle de la factura</ModalHeader>
           <ModalBody>
             <div className='row factura'>
               <div className="col-6 groupText">
-                <span>Factura <br /> <b>4581</b></span>
+                <span>Factura <br /> <b>{detallesFactura.factura}</b></span>
               </div>
               <div className="col-6 groupText">
-                <span>Estado <br /> <b><span className="badge text-bg-warning rounded-pill"><i className="bi bi-exclamation-circle"> </i>Pendiente</span></b></span>
+                <span>Estado <br /> <b>{
+                  sum(detallesFactura) <= detallesFactura.pago ?
+                    <span className="badge text-bg-success rounded-pill"><i className="bi bi-check-circle"> </i>Pago</span> :
+                    <span className="badge text-bg-warning rounded-pill"><i className="bi bi-exclamation-circle"> </i>Pendiente</span>
+                }</b></span>
               </div>
               <div className="col-6">
               </div>
             </div>
             <div>
               <div className="col-6 groupText">
-                <span>Fecha <br /> <b>03/02/2024</b></span>
+                <span>Fecha <br /> <b>{detallesFactura.fecha}</b></span>
               </div>
               <div className="col-6 groupText">
-                <span>Almacen <br /> <b>Metalicas Danfel</b></span>
+                <span>Almacen <br /> <b>Metalicas {detallesFactura.almacen}</b></span>
               </div>
 
             </div>
@@ -349,41 +434,53 @@ const Ventas = () => {
                 </thead>
                 <tbody>
                   <tr>
-                    <td>4</td>
-                    <td>Asadores 40cm</td>
-                    <td>$150.000</td>
-                    <td>$700.000</td>
+                    <td>{detallesFactura.items.item1.cantidad}</td>
+                    <td>{detallesFactura.items.item1.articulo}</td>
+                    <td>{detallesFactura.items.item1.precio}</td>
+                    <td>{moneda(detallesFactura.items.item1.cantidad * detallesFactura.items.item1.precio)}</td>
                   </tr>
                   <tr>
-                    <td>1</td>
-                    <td>Calentador VC, 60cm, E</td>
-                    <td>$150.000</td>
-                    <td>$1.700.000</td>
+                    <td>{detallesFactura.items.item2.cantidad}</td>
+                    <td>{detallesFactura.items.item2.articulo}</td>
+                    <td>{detallesFactura.items.item2.precio}</td>
+                    <td>{moneda(detallesFactura.items.item2.cantidad * detallesFactura.items.item2.precio)}</td>
                   </tr>
                   <tr>
-                    <td>4</td>
-                    <td>Cocina 3P,2D,1S y patas en acero</td>
-                    <td>$150.000</td>
-                    <td>$700.000</td>
+                    <td>{detallesFactura.items.item3.cantidad}</td>
+                    <td>{detallesFactura.items.item3.articulo}</td>
+                    <td>{detallesFactura.items.item3.precio}</td>
+                    <td>{moneda(detallesFactura.items.item3.cantidad * detallesFactura.items.item3.precio)}</td>
+                  </tr>
+                  <tr>
+                    <td>{detallesFactura.items.item4.cantidad}</td>
+                    <td>{detallesFactura.items.item4.articulo}</td>
+                    <td>{detallesFactura.items.item4.precio}</td>
+                    <td>{moneda(detallesFactura.items.item4.cantidad * detallesFactura.items.item4.precio)}</td>
+                  </tr>
+                  <tr>
+                    <td>{detallesFactura.items.item5.cantidad}</td>
+                    <td>{detallesFactura.items.item5.articulo}</td>
+                    <td>{detallesFactura.items.item5.precio}</td>
+                    <td>{moneda(detallesFactura.items.item5.cantidad * detallesFactura.items.item5.precio)}</td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <div>
               <div className="col-12 groupText">
-                <span>Metodo de pago <br /> <b>Efectivo</b></span>
+                <span>Metodo de pago <br /> <b>{detallesFactura.metodo}</b></span>
               </div>
               <div className="row">
                 <div className="col-12 groupText">
-                  <span>Total <br /> <b>$4.470.000</b></span>
+                  <span>Total <br /> <b>{moneda(sum(detallesFactura))}</b></span>
                 </div>
               </div>
               <div className="row">
                 <div className="col-6 groupText">
-                  <span>Abono <br /> <b>$3.000.000</b></span>
+                  <span>Abono <br /> <b>{moneda(detallesFactura.pago)}</b></span>
                 </div>
                 <div className="col-6 groupText">
-                  <span>Pendiente <br /> <b>$1.470.000</b></span>
+                  <span>Pendiente <br /> <b>{moneda(sum(detallesFactura) - detallesFactura.pago)}</b></span>
                 </div>
               </div>
             </div>
@@ -398,7 +495,7 @@ const Ventas = () => {
             </Button>{' '}
           </ModalFooter>
         </Modal>
-      </div>
+      </div> */}
 
       <Col lg="12">
         <Card>
@@ -431,29 +528,25 @@ const Ventas = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <th scope="row">2/02/2024</th>
-                  <td>5736</td>
-                  <td>Vitrina 13 bandejas con entrepaño</td>
-                  <td>Danfel</td>
-                  <td><span className="badge text-bg-success rounded-pill"><i className="bi bi-check-circle"> </i>Pago</span></td>
-                  <td>$2.600.000</td>
-                  <td>
-                    <Button color="outline-primary" onClick={toggleFactura} size="sm"><i className="bi bi-file-earmark-text"> </i> Detalles</Button>
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">3/02/2024</th>
-                  <td>0142</td>
-                  <td>Cilindradora 2hp</td>
-                  <td>DyF</td>
-                  <td><span className="badge text-bg-warning rounded-pill"><i className="bi bi-exclamation-circle"> </i>Pendiente</span></td>
-                  <td>$820.000</td>
-                  <td>
-                    <Button color="outline-primary" onClick={toggleFactura} size="sm"><i className="bi bi-file-earmark-text"> </i> Detalles</Button>
-                  </td>
-                </tr>
-
+                {ventas.map((val, key) => {
+                  let venta = JSON.parse(val.venta)
+                  return (<tr key={key}>
+                    <th>{venta.fecha}</th>
+                    <td>{venta.factura}</td>
+                    <td>{venta.items.item1.articulo}</td>
+                    <td>{venta.almacen}</td>
+                    <td>{
+                      sum(venta) <= venta.pago ?
+                        <span className="badge text-bg-success rounded-pill"><i className="bi bi-check-circle"> </i>Pago</span> :
+                        <span className="badge text-bg-warning rounded-pill"><i className="bi bi-exclamation-circle"> </i>Pendiente</span>
+                    }</td>
+                    <td>{moneda(sum(venta))}</td>
+                    <td>
+                      <Button color="outline-primary" onClick={() => { toggleFactura(); setDetallesFactura(venta) }} size="sm"><i className="bi bi-file-earmark-text"> </i> Detalles</Button>
+                    </td>
+                  </tr>
+                  )
+                })}
               </tbody>
             </Table>
           </CardBody>

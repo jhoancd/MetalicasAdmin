@@ -91,6 +91,35 @@ app.get("/obtenerHistorial", (req, res) => {
     )
 })
 
+// Agregar Venta
+app.post("/agregarVenta", (req, res) => {
+    const data = req.body.data
+
+    db.query("INSERT INTO ventas(factura, venta) VALUES(?,?)", [data.factura, JSON.stringify(data)],
+        (err, result) => {
+            if (err) {
+                console.log(err);
+            } else {
+                res.send(result)
+            }
+        }
+    )
+})
+
+// Obtener Venta
+app.get("/obtenerVentas", (req, res) => {
+    db.query("SELECT * FROM ventas ORDER BY id DESC",
+        (err, resul) => {
+            if (err) {
+                console.log(err)
+            } else {
+                res.send(resul)
+            }
+        }
+    )
+})
+
+
 // Registro Historial
 app.post("/registrarHistorial", (req, res) => {
     const almacenHistorial = req.body.almacenHistorial;
