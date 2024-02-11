@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Axios from "axios"
 import { useForm } from 'react-hook-form';
 import {
@@ -9,42 +9,52 @@ import {
 
 const Ventas = () => {
 
-  const { register, handleSubmit } = useForm()
-
-  let venta = {
-    "factura": factura,
-    "fecha": fecha,
-    "almacen": almacen,
-    "pago": pago,
-    "metodo": metodo,
-    "redesSociales": redesSociales,
-    "nombreRedesSociales": nombreRedesSociales,
-    "item1": {
-      "cantidad": cantidad1,
-      "descripcion": articulo1,
-      "precio": precio1
-    },
-    "item2": {
-      "cantidad": cantidad2,
-      "descripcion": articulo2,
-      "precio": precio2
-    },
-    "item3": {
-      "cantidad": cantidad3,
-      "descripcion": articulo3,
-      "precio": precio3
-    },
-    "item4": {
-      "cantidad": cantidad4,
-      "descripcion": articulo4,
-      "precio": precio4,
-    },
-    "item5": {
-      "cantidad": cantidad5,
-      "descripcion": articulo5,
-      "precio": precio5,
-    }
+  // FORMATEAR PESO
+  const moneda = (val) => {
+    return `$${new Intl.NumberFormat().format(val)}`
   }
+
+  const { register, handleSubmit, watch } = useForm({
+    defaultValues: {
+      items: {
+        item1: {
+          precio: 0,
+          cantidad: 0
+        },
+        item2: {
+          precio: 0,
+          cantidad: 0
+        },
+        item3: {
+          precio: 0,
+          cantidad: 0
+        },
+        item4: {
+          precio: 0,
+          cantidad: 0
+        },
+        item5: {
+          precio: 0,
+          cantidad: 0
+        }
+      }
+
+    }
+  })
+
+  const data = watch()
+
+  const sum = (data) => {
+    let mul1 = data.items.item1.precio * data.items.item1.cantidad
+    let mul2 = data.items.item2.precio * data.items.item2.cantidad
+    let mul3 = data.items.item3.precio * data.items.item3.cantidad
+    let mul4 = data.items.item4.precio * data.items.item4.cantidad
+    let mul5 = data.items.item5.precio * data.items.item5.cantidad
+
+    return mul1 + mul2 + mul3 + mul4 + mul5
+  }
+
+  const [cantidad, precio] = watch(["items.item1.cantidad", "items.item1.precio"])
 
   const [redesShow, setRedesShow] = useState("none")
   const handleRedes = () => {
@@ -64,6 +74,7 @@ const Ventas = () => {
   const [modalFactura, setModalFactura] = useState(false);
   const toggleFactura = () => setModalFactura(!modalFactura);
 
+
   return (
     <div>
 
@@ -73,7 +84,6 @@ const Ventas = () => {
           <ModalHeader toggle={toggle}><i className="bi bi-cart-plus"> </i>Registrar venta</ModalHeader>
           <ModalBody>
             <Form onSubmit={handleSubmit((data) => {
-
               console.log(data)
             })}>
               <FormGroup row>
@@ -114,154 +124,149 @@ const Ventas = () => {
                   <tbody>
                     <tr>
                       <td>
-                        <Input
-                          {...registerArticulos("cantidad1")}
+                        <input className="form-control"
+                          {...register("items.item1.cantidad", { valueAsNumber: true })}
                           type="number"
                         />
                       </td>
                       <td>
-                        <Input
-                          {...registerArticulos("articulo1")}
+                        <select input className="form-control"
+                          {...register("items.item1.articulo")}
                           type="select"
                         >
                           <option value=""></option>
-                          <option value="">Asador de campana</option>
+                          <option value="Asador de campana">Asador de campana</option>
                           <option value="">Carro de comidas rapidas, P40, V40, A Volcanica, F 2gal</option>
                           <option value="">Cocina 3S, 1D, 2S</option>
                           <option value="">Mesa de 120x60</option>
                           <option value="">Calentador VC, 50cm, E</option>
-                        </Input>
+                        </select>
                       </td>
                       <td>
-                        <Input
-                          {...registerArticulos("precio")}
+                        <input className="form-control"
+                          {...register("items.item1.precio", { valueAsNumber: true })}
                           type="number"
                         />
                       </td>
                     </tr>
                     <tr>
-                      <th>
-                        <Input
-                          name="cantidad2"
-                          type="number"
-                          onChange={(e) => setCantidad2(e.target.value)}
-                        />
-                      </th>
                       <td>
-                        <Input
-                          id="articulo2"
-                          name="articulo2"
+                        <input className="form-control"
+                          {...register("items.item2.cantidad", { valueAsNumber: true })}
+                          type="number"
+                        />
+                      </td>
+                      <td>
+                        <select input className="form-control"
+                          {...register("items.item2.articulo")}
                           type="select"
-                          onChange={(e) => setArticulo2(e.target.value)}
                         >
                           <option value=""></option>
-                          <option value="">Asador de campana</option>
+                          <option value="Asador de campana">Asador de campana</option>
                           <option value="">Carro de comidas rapidas, P40, V40, A Volcanica, F 2gal</option>
                           <option value="">Cocina 3S, 1D, 2S</option>
                           <option value="">Mesa de 120x60</option>
                           <option value="">Calentador VC, 50cm, E</option>
-                        </Input>
+                        </select>
                       </td>
                       <td>
-                        <Input
-                          name="precio2"
-                          type="number"
-                          onChange={(e) => setPrecio3(e.target.value)}
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>
-                        <Input
-                          name="cantidad3"
-                          type="number"
-                          onChange={(e) => setCantidad3(e.target.value)}
-                        />
-                      </th>
-                      <td>
-                        <Input
-                          name="articulo3"
-                          type="select"
-                          onChange={(e) => setArticulo3(e.target.value)}
-                        >
-                          <option value=""></option>
-                          <option value="">Asador de campana</option>
-                          <option value="">Carro de comidas rapidas, P40, V40, A Volcanica, F 2gal</option>
-                          <option value="">Cocina 3S, 1D, 2S</option>
-                          <option value="">Mesa de 120x60</option>
-                          <option value="">Calentador VC, 50cm, E</option>
-                        </Input>
-                      </td>
-                      <td>
-                        <Input
-                          name="precio3"
+                        <input className="form-control"
+                          {...register("items.item2.precio", { valueAsNumber: true })}
                           type="number"
                         />
                       </td>
                     </tr>
                     <tr>
-                      <th>
-                        <Input
-                          name="cantidad4"
+                      <td>
+                        <input className="form-control"
+                          {...register("items.item3.cantidad", { valueAsNumber: true })}
                           type="number"
                         />
-                      </th>
+                      </td>
                       <td>
-                        <Input
-                          name="articulo4"
+                        <select input className="form-control"
+                          {...register("items.item3.articulo")}
                           type="select"
                         >
                           <option value=""></option>
-                          <option value="">Asador de campana</option>
+                          <option value="Asador de campana">Asador de campana</option>
                           <option value="">Carro de comidas rapidas, P40, V40, A Volcanica, F 2gal</option>
                           <option value="">Cocina 3S, 1D, 2S</option>
                           <option value="">Mesa de 120x60</option>
                           <option value="">Calentador VC, 50cm, E</option>
-                        </Input>
+                        </select>
                       </td>
                       <td>
-                        <Input
-                          name="precio4"
+                        <input className="form-control"
+                          {...register("items.item3.precio", { valueAsNumber: true })}
                           type="number"
                         />
                       </td>
                     </tr>
                     <tr>
-                      <th>
-                        <Input
-                          name="cantidad5"
+                      <td>
+                        <input className="form-control"
+                          {...register("items.item4.cantidad", { valueAsNumber: true })}
                           type="number"
                         />
-                      </th>
+                      </td>
                       <td>
-                        <Input
-                          name="articulo5"
+                        <select input className="form-control"
+                          {...register("items.item4.articulo")}
                           type="select"
                         >
                           <option value=""></option>
-                          <option value="">Asador de campana</option>
+                          <option value="Asador de campana">Asador de campana</option>
                           <option value="">Carro de comidas rapidas, P40, V40, A Volcanica, F 2gal</option>
                           <option value="">Cocina 3S, 1D, 2S</option>
                           <option value="">Mesa de 120x60</option>
                           <option value="">Calentador VC, 50cm, E</option>
-                        </Input>
+                        </select>
                       </td>
                       <td>
-                        <Input
-                          name="precio5"
+                        <input className="form-control"
+                          {...register("items.item4.precio", { valueAsNumber: true })}
                           type="number"
                         />
                       </td>
                     </tr>
-
+                    <tr>
+                      <td>
+                        <input className="form-control"
+                          {...register("items.item5.cantidad", { valueAsNumber: true })}
+                          type="number"
+                        />
+                      </td>
+                      <td>
+                        <select input className="form-control"
+                          {...register("items.item5.articulo")}
+                          type="select"
+                        >
+                          <option value=""></option>
+                          <option value="Asador de campana">Asador de campana</option>
+                          <option value="">Carro de comidas rapidas, P40, V40, A Volcanica, F 2gal</option>
+                          <option value="">Cocina 3S, 1D, 2S</option>
+                          <option value="">Mesa de 120x60</option>
+                          <option value="">Calentador VC, 50cm, E</option>
+                        </select>
+                      </td>
+                      <td>
+                        <input className="form-control"
+                          {...register("items.item5.precio", { valueAsNumber: true })}
+                          type="number"
+                        />
+                      </td>
+                    </tr>
                   </tbody>
                 </Table>
+                <div className="mb-2 fs-5 text-end"><b>Total: </b> {moneda(sum(data))}</div>
+
                 {/*FIN TABLA DE ARTICULOS FACTURA */}
 
               </div>
               <FormGroup>
                 <label htmlFor="pago">Pago</label>
-                <input {...register("pago")} type="number" className="form-control" />
+                <input {...register("pago", { valueAsNumber: true })} type="number" className="form-control" />
               </FormGroup>
               <FormGroup>
                 <Label htmlFor="metodo">Metodo</Label>
@@ -291,17 +296,19 @@ const Ventas = () => {
                   <option value="vanesa">Vanesa</option>
                 </select>
               </FormGroup>
-              <Button color="outline-danger" onClick={toggle}>
-                <i className="bi bi-x"> </i> Cancelar
-              </Button>
-              <Button color="primary" type="submit">
-                <i className="bi bi-check"> </i> Guardar
-              </Button>{' '}
+
             </Form>
 
           </ModalBody>
           <ModalFooter>
-
+            <Button color="outline-danger" onClick={toggle}>
+              <i className="bi bi-x"> </i> Cancelar
+            </Button>
+            <Button color="primary" type="submit" onClick={handleSubmit((data) => {
+              console.log(data)
+            })}>
+              <i className="bi bi-check"> </i> Guardar
+            </Button>{' '}
           </ModalFooter>
         </Modal>
       </div>
