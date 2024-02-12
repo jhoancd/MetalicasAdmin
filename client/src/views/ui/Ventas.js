@@ -15,6 +15,7 @@ const Ventas = () => {
   const notifyError = (msg) => toast.error(msg);
 
   const [ventas, setVentas] = useState([])
+  const [detallesPagos, setDetallesPago] = useState([])
   const [detallesFactura, setDetallesFactura] = useState({
     "pago": 0,
     "fecha": "",
@@ -93,11 +94,11 @@ const Ventas = () => {
 
     Axios.post("http://192.168.20.41:3001/agregarVenta", {
       data: data,
-      pagos: {
+      pagos: [{
         "fecha": data.fecha,
         "pago": data.pago,
         "metodo": data.metodo
-      }
+      }]
     }).then(() => {
       notify("Agregado correctamente");
       toggle()
@@ -144,7 +145,7 @@ const Ventas = () => {
       />
 
       <ModalRegistrarVenta modalVenta={modalVenta} toggle={toggle} agregarVenta={agregarVenta} />
-      <ModalFactura modalFactura={modalFactura} toggleFactura={toggleFactura} detallesFactura={detallesFactura} />
+      <ModalFactura modalFactura={modalFactura} toggleFactura={toggleFactura} detallesFactura={detallesFactura} ventas={detallesPagos} />
 
       <Col lg="12">
         <Card>
@@ -191,7 +192,7 @@ const Ventas = () => {
                     }</td>
                     <td>{moneda(sum(venta))}</td>
                     <td>
-                      <Button color="outline-primary" onClick={() => { toggleFactura(); setDetallesFactura(venta) }} size="sm"><i className="bi bi-file-earmark-text"> </i> Detalles</Button>
+                      <Button color="outline-primary" onClick={() => { toggleFactura(); setDetallesFactura(venta); setDetallesPago(val.pagos) }} size="sm"><i className="bi bi-file-earmark-text"> </i> Detalles</Button>
                     </td>
                   </tr>
                   )

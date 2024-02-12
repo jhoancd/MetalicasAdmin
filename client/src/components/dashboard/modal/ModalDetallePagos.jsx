@@ -4,7 +4,16 @@ import {
 import { sum, moneda } from "../tools"
 
 
-export default function ModalDetallesPagos({ modalPagos, togglePagos, detallesFactura }) {
+export default function ModalDetallesPagos({ modalPagos, togglePagos, detallesFactura, ventas }) {
+
+    let historial;
+
+    if (ventas == "") {
+        historial = []
+    } else {
+        historial = JSON.parse(ventas)
+    }
+
     return (
         <div>
             <Modal isOpen={modalPagos} toggle={togglePagos} fullscreen="sm" size="lg" scrollable={true} animation="false">
@@ -19,11 +28,16 @@ export default function ModalDetallesPagos({ modalPagos, togglePagos, detallesFa
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>{detallesFactura.fecha}</td>
-                                <td>{moneda(detallesFactura.pago)}</td>
-                                <td>{detallesFactura.metodo}</td>
-                            </tr>
+                            {
+                                historial.map((val, key) => {
+                                    return (<tr>
+                                        <td>{val.fecha}</td>
+                                        <td>{moneda(val.abono)}</td>
+                                        <td>{val.metodo}</td>
+                                    </tr>)
+                                })
+                            }
+
                         </tbody>
                     </Table>
                 </ModalBody>

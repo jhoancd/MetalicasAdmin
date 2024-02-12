@@ -3,20 +3,26 @@ import {
 } from "reactstrap";
 import { sum, moneda } from "../tools"
 import ModalDetallePagos from "./ModalDetallePagos";
+import ModalRealizarAbono from "./ModalRealizarAbono";
 import { useState } from "react";
 
 
 
-export default function Modalfactura({ modalFactura, toggleFactura, detallesFactura }) {
+export default function Modalfactura({ modalFactura, toggleFactura, detallesFactura, ventas }) {
 
     // MODAL PAGOS
     const [modalPagos, setModalPagos] = useState(false);
     const togglePagos = () => setModalPagos(!modalPagos);
 
+    // MODAL ABONO
+    const [modalAbono, setModalAbono] = useState(false);
+    const toggleAbono = () => setModalAbono(!modalAbono);
+
     return (
         <div>
 
-            <ModalDetallePagos modalPagos={modalPagos} togglePagos={togglePagos} detallesFactura={detallesFactura} />
+            <ModalRealizarAbono modalAbono={modalAbono} toggleAbono={toggleAbono} detallesFactura={detallesFactura} ventas={ventas} />
+            <ModalDetallePagos modalPagos={modalPagos} togglePagos={togglePagos} detallesFactura={detallesFactura} ventas={ventas} />
 
 
             <Modal isOpen={modalFactura} toggle={toggleFactura} fullscreen="sm" size="lg" scrollable={true} animation="false">
@@ -116,8 +122,8 @@ export default function Modalfactura({ modalFactura, toggleFactura, detallesFact
                     <Button color="outline-secondary" onClick={togglePagos}>
                         <i className="bi bi-eye"> </i> Ver Pagos
                     </Button>
-                    <Button color="primary" onClick={toggleFactura}>
-                        <i className="bi bi-currency-dollar"> </i> Realizar Abono
+                    <Button color="primary" onClick={toggleAbono}>
+                        <i className="bi bi-check"> </i> Realizar Abono
                     </Button>{' '}
                 </ModalFooter>
             </Modal>

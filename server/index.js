@@ -107,6 +107,23 @@ app.post("/agregarVenta", (req, res) => {
     )
 })
 
+// Agregar Abono
+app.put("/agregarAbono", (req, res) => {
+    const factura = req.body.factura
+    const abono = req.body.abono
+    let historial = JSON.parse(req.body.historial)
+    historial.push(abono)
+
+    db.query(`UPDATE ventas SET pagos = ? WHERE factura=?`, [JSON.stringify(historial), factura],
+        (err, resul) => {
+            if (err) {
+                console.log(err)
+            } else {
+                res.send(resul)
+            }
+        })
+})
+
 // Obtener Venta
 app.get("/obtenerVentas", (req, res) => {
     db.query("SELECT * FROM ventas ORDER BY id DESC",

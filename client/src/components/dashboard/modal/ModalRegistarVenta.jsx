@@ -236,16 +236,16 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
 
                     </div>
                     <FormGroup>
-                        <label htmlFor="pago">Pago</label>
-                        <input {...register("pago", { valueAsNumber: true })} type="number" className="form-control" />
+                        <label htmlFor="abono">Pago</label>
+                        <input {...register("abono", { valueAsNumber: true })} type="number" className="form-control" />
                     </FormGroup>
                     <FormGroup>
                         <Label htmlFor="metodo">Metodo</Label>
                         <select className="form-control" {...register("metodo")} type="select">
-                            <option value="efectivo">Efectivo</option>
-                            <option value="transferencia">Transferencia</option>
-                            <option value="datafono">Datafono</option>
-                            <option value="sistecredito">Sistecredito</option>
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Transferencia">Transferencia</option>
+                            <option value="Datafono">Datafono</option>
+                            <option value="Sistecredito">Sistecredito</option>
                         </select>
                     </FormGroup>
                     <FormGroup >
