@@ -94,8 +94,9 @@ app.get("/obtenerHistorial", (req, res) => {
 // Agregar Venta
 app.post("/agregarVenta", (req, res) => {
     const data = req.body.data
+    const pagos = req.body.pagos
 
-    db.query("INSERT INTO ventas(factura, venta) VALUES(?,?)", [data.factura, JSON.stringify(data)],
+    db.query("INSERT INTO ventas(factura, venta,pagos) VALUES(?,?,?)", [data.factura, JSON.stringify(data), JSON.stringify(pagos)],
         (err, result) => {
             if (err) {
                 console.log(err);
