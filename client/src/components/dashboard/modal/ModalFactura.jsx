@@ -4,9 +4,9 @@ import {
 import { sum, moneda } from "../tools"
 import ModalDetallePagos from "./ModalDetallePagos";
 import ModalRealizarAbono from "./ModalRealizarAbono";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function Modalfactura({ modalFactura, toggleFactura, detallesFactura, ventas }) {
+export default function Modalfactura({ modalFactura, toggleFactura, detallesFactura, ventas, obtenerVentas }) {
     let historial;
     let totalAbono = 0;
 
@@ -24,6 +24,10 @@ export default function Modalfactura({ modalFactura, toggleFactura, detallesFact
     const [modalAbono, setModalAbono] = useState(false);
     const toggleAbono = () => setModalAbono(!modalAbono);
 
+    useEffect(() => {
+        obtenerVentas()
+    })
+
     return (
         <div>
 
@@ -31,7 +35,13 @@ export default function Modalfactura({ modalFactura, toggleFactura, detallesFact
                 totalAbono = totalAbono + val.abono;
             })}
 
-            <ModalRealizarAbono modalAbono={modalAbono} toggleAbono={toggleAbono} detallesFactura={detallesFactura} ventas={ventas} />
+            <ModalRealizarAbono
+                modalAbono={modalAbono}
+                toggleAbono={toggleAbono}
+                detallesFactura={detallesFactura}
+                ventas={ventas}
+                obtenerVentas={obtenerVentas}
+            />
             <ModalDetallePagos modalPagos={modalPagos} togglePagos={togglePagos} detallesFactura={detallesFactura} ventas={ventas} />
 
 
@@ -129,14 +139,28 @@ export default function Modalfactura({ modalFactura, toggleFactura, detallesFact
 
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="outline-secondary" onClick={togglePagos}>
-                        <i className="bi bi-eye"> </i> Ver Pagos
+                    <Button color="outline-danger" onClick={toggleFactura}>
+                        <i className="bi bi-x"> </i> Cerrar
                     </Button>
-                    <Button color="primary" onClick={toggleAbono}>
-                        <i className="bi bi-check"> </i> Realizar Abono
-                    </Button>{' '}
+                    <div className="btn-group">
+                        {
+                            sum(detallesFactura) <= totalAbono ?
+                                <Button color="outline-primary" onClick={togglePagos}>
+                                    <i className="bi bi-eye"> </i> Historial
+                                </Button> :
+                                <>  <Button color="outline-primary" onClick={togglePagos}>
+                                    <i className="bi bi-eye"> </i> Historial
+                                </Button>
+                                    <Button color="primary" onClick={toggleAbono}>
+                                        <i className="bi bi-plus"> </i> Abono
+                                    </Button>
+                                </>
+                        }
+
+                    </div>
+
                 </ModalFooter>
             </Modal>
-        </div>
+        </div >
     )
 }

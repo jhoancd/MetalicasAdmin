@@ -4,12 +4,16 @@ import {
 import { useForm } from 'react-hook-form';
 import Axios from "axios"
 import toast, { Toaster } from 'react-hot-toast';
-import { useState } from "react";
+import { hoy } from "../tools"
 
 
-export default function ModalRealizarAbono({ modalAbono, toggleAbono, detallesFactura, ventas }) {
+export default function ModalRealizarAbono({ modalAbono, toggleAbono, detallesFactura, ventas, obtenerVentas }) {
 
-    const { register, handleSubmit } = useForm()
+    const { register, handleSubmit } = useForm({
+        defaultValues: {
+            fecha: hoy()
+        }
+    })
 
     const notify = (msg) => toast.success(msg);
     const notifyError = (msg) => toast.error(msg);
@@ -21,6 +25,7 @@ export default function ModalRealizarAbono({ modalAbono, toggleAbono, detallesFa
             abono: data,
             historial: ventas
         }).then(() => {
+            obtenerVentas()
             notify("Agregado correctamente");
         }).catch((err) => {
             notifyError(`Error al agregar abono: ${err}`);
@@ -49,7 +54,7 @@ export default function ModalRealizarAbono({ modalAbono, toggleAbono, detallesFa
                     },
                 }}
             />
-            <Modal isOpen={modalAbono} toggle={toggleAbono} fullscreen="sm" size="lg" scrollable={true} animation="false">
+            <Modal isOpen={modalAbono} toggle={toggleAbono} fullscreen="sm" size="md" scrollable={true} animation="false">
                 <ModalHeader toggle={toggleAbono}><i className="bi bi-check"> </i>Realizar abono factura {detallesFactura.factura}</ModalHeader>
                 <ModalBody>
                     <Form>

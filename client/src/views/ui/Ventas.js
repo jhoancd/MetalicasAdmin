@@ -4,13 +4,11 @@ import {
   Col, Table, Card, CardTitle, CardBody, Button, Input, InputGroupText, InputGroup
 } from "reactstrap";
 import toast, { Toaster } from 'react-hot-toast';
-import actualizarVentas from "../../components/dashboard/querys/obtenerVenta";
 import { sum, moneda } from "../../components/dashboard/tools"
 import ModalRegistrarVenta from "../../components/dashboard/modal/ModalRegistarVenta";
 import ModalFactura from "../../components/dashboard/modal/ModalFactura";
 
-
-const Ventas = (ventas_data) => {
+const Ventas = () => {
 
   let totalAbono = 0;
   const notify = (msg) => toast.success(msg);
@@ -55,6 +53,7 @@ const Ventas = (ventas_data) => {
     "redesSociales": false
   })
 
+
   //MODAL REGISTRAR VENTA
   const [modalVenta, setModalVenta] = useState(false);
   const toggle = () => setModalVenta(!modalVenta);
@@ -94,12 +93,11 @@ const Ventas = (ventas_data) => {
 
   // QUERY AGREGAR VENTA
   const agregarVenta = (data) => {
-
     Axios.post("http://192.168.20.41:3001/agregarVenta", {
       data: data,
       pagos: [{
         "fecha": data.fecha,
-        "pago": data.pago,
+        "abono": data.abono,
         "metodo": data.metodo
       }]
     }).then(() => {
@@ -109,13 +107,22 @@ const Ventas = (ventas_data) => {
         "Venta", data.almacen,
         `Se realizo venta de <b>${data.items.item1.articulo}</b> por un valor de ${data.items.item1.precio}`)
     }).catch((err) => {
-      notifyError(`Error al agregar inventario: ${err}`);
+      notifyError(`Error al agregar venta: ${err}`);
+    })
+  }
+
+
+  const obtenerVentas = () => {
+    'use server';
+    Axios.get("http://192.168.20.41:3001/obtenerVentas").then((res) => {
+      setVentas(res.data)
+    }).catch((err) => {
+      notifyError(`Error al obtener ventas: ${err}`);
     })
   }
 
   useEffect(() => {
-    actualizarVentas(setVentas)
-
+    obtenerVentas()
   })
   return (
     <div>
@@ -139,8 +146,18 @@ const Ventas = (ventas_data) => {
         }}
       />
 
-      <ModalRegistrarVenta modalVenta={modalVenta} toggle={toggle} agregarVenta={agregarVenta} />
-      <ModalFactura modalFactura={modalFactura} toggleFactura={toggleFactura} detallesFactura={detallesFactura} ventas={detallesPagos} />
+      <ModalRegistrarVenta
+        modalVenta={modalVenta}
+        toggle={toggle}
+        agregarVenta={agregarVenta}
+      />
+      <ModalFactura
+        modalFactura={modalFactura}
+        toggleFactura={toggleFactura}
+        detallesFactura={detallesFactura}
+        ventas={detallesPagos}
+        obtenerVentas={obtenerVentas}
+      />
 
       <Col lg="12">
         <Card>

@@ -3,13 +3,14 @@ import {
 } from "reactstrap";
 import { useForm } from 'react-hook-form';
 import { useState } from "react";
-import { sum, moneda } from "../tools"
+import { sum, moneda, hoy } from "../tools"
 
 
 export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }) {
 
     const { register, handleSubmit, watch } = useForm({
         defaultValues: {
+            fecha: hoy(),
             items: {
                 item1: {
                     precio: 0,
