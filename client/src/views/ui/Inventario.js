@@ -455,8 +455,10 @@ const Inventario = () => {
                     <td>{val.nathan}</td>
                     <td>{moneda(val.costo)}</td>
                     <td>
-                      <Button color="outline-primary" className="me-2" onClick={() => { toggleTraslado(); traslado(val) }} size="sm"><i className="bi bi-arrow-left-right"> </i></Button>
-                      <Button color="outline-success" onClick={() => { toggleIngreso(); traslado(val) }} size="sm"><i className="bi bi-plus"> </i></Button>
+                      <div className="btn-group">
+                        <Button color="outline-primary" onClick={() => { toggleTraslado(); traslado(val) }} size="sm"><i className="bi bi-arrow-left-right"> </i></Button>
+                        <Button color="outline-success" onClick={() => { toggleIngreso(); traslado(val) }} size="sm"><i className="bi bi-plus"> </i></Button>
+                      </div>
                     </td>
                   </tr>
                   )

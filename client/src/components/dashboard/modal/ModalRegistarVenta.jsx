@@ -38,7 +38,7 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
     })
 
     const data = watch()
-    const pago = watch("pago")
+    const pago = watch("abono")
 
 
     const [redesShow, setRedesShow] = useState("none")
