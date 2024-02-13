@@ -113,7 +113,6 @@ const Ventas = () => {
 
 
   const obtenerVentas = () => {
-    'use server';
     Axios.get("http://192.168.20.41:3001/obtenerVentas").then((res) => {
       setVentas(res.data)
     }).catch((err) => {
