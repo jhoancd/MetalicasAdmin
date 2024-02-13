@@ -16,7 +16,7 @@ export default function ModalDetallesPagos({ modalPagos, togglePagos, detallesFa
 
     return (
         <div>
-            <Modal isOpen={modalPagos} toggle={togglePagos} fullscreen="sm" size="lg" scrollable={true} animation="false">
+            <Modal isOpen={modalPagos} toggle={togglePagos} fullscreen="sm" size="md" scrollable={true} animation="false">
                 <ModalHeader toggle={togglePagos}><i className="bi bi-currency-dollar"> </i>Registro de pagos</ModalHeader>
                 <ModalBody>
                     <Table>

@@ -4,13 +4,15 @@ import {
   Col, Table, Card, CardTitle, CardBody, Button, Input, InputGroupText, InputGroup
 } from "reactstrap";
 import toast, { Toaster } from 'react-hot-toast';
+import actualizarVentas from "../../components/dashboard/querys/obtenerVenta";
 import { sum, moneda } from "../../components/dashboard/tools"
 import ModalRegistrarVenta from "../../components/dashboard/modal/ModalRegistarVenta";
 import ModalFactura from "../../components/dashboard/modal/ModalFactura";
 
 
-const Ventas = () => {
+const Ventas = (ventas_data) => {
 
+  let totalAbono = 0;
   const notify = (msg) => toast.success(msg);
   const notifyError = (msg) => toast.error(msg);
 
@@ -61,6 +63,7 @@ const Ventas = () => {
   const [modalFactura, setModalFactura] = useState(false);
   const toggleFactura = () => setModalFactura(!modalFactura);
 
+
   // QUERY HISTORIAL
   const registrarHistorial = (tipo, almacen, descripcion) => {
     let fecha = new Date()
@@ -110,17 +113,9 @@ const Ventas = () => {
     })
   }
 
-  // QUERY OBTENER VENTA
-  const obtenerVentas = () => {
-    Axios.get("http://192.168.20.41:3001/obtenerVentas").then((res) => {
-      setVentas(res.data)
-    }).catch((err) => {
-      notifyError(`Error al obtener ventas: ${err}`);
-    })
-  }
-
   useEffect(() => {
-    obtenerVentas()
+    actualizarVentas(setVentas)
+
   })
   return (
     <div>
@@ -163,7 +158,7 @@ const Ventas = () => {
               <InputGroupText>
                 <i className="bi bi-search"></i>
               </InputGroupText>
-              <Input placeholder="Buscar por factura  " type="text" />
+              <Input placeholder="Buscar por factura" type="number" />
             </InputGroup>
             <Table bordered striped responsive hover>
               <thead>
@@ -180,21 +175,33 @@ const Ventas = () => {
               <tbody>
                 {ventas.map((val, key) => {
                   let venta = JSON.parse(val.venta)
+                  let pagos = JSON.parse(val.pagos)
                   return (<tr key={key}>
                     <th>{venta.fecha}</th>
                     <td>{venta.factura}</td>
                     <td>{venta.items.item1.articulo}</td>
                     <td>{venta.almacen}</td>
-                    <td>{
-                      sum(venta) <= venta.pago ?
-                        <span className="badge text-bg-success rounded-pill"><i className="bi bi-check-circle"> </i>Pago</span> :
-                        <span className="badge text-bg-warning rounded-pill"><i className="bi bi-exclamation-circle"> </i>Pendiente</span>
-                    }</td>
+                    <td>
+                      {
+                        pagos.map((e) => {
+                          totalAbono = totalAbono + e.abono;
+                        })
+                      }
+                      {
+                        sum(venta) <= totalAbono ?
+                          <span className="badge text-bg-success rounded-pill"><i className="bi bi-check-circle"> </i>Pago</span> :
+                          <span className="badge text-bg-warning rounded-pill"><i className="bi bi-exclamation-circle"> </i>Pendiente</span>
+                      }
+                      {
+                        <span style={{ display: "none" }}>{totalAbono = 0}</span>
+                      }
+                    </td>
                     <td>{moneda(sum(venta))}</td>
                     <td>
                       <Button color="outline-primary" onClick={() => { toggleFactura(); setDetallesFactura(venta); setDetallesPago(val.pagos) }} size="sm"><i className="bi bi-file-earmark-text"> </i> Detalles</Button>
                     </td>
                   </tr>
+
                   )
                 })}
               </tbody>

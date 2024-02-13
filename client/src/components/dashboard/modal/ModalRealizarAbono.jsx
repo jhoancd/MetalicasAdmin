@@ -79,6 +79,7 @@ export default function ModalRealizarAbono({ modalAbono, toggleAbono, detallesFa
                     </Button>
                     <Button color="primary" onClick={handleSubmit((data) => {
                         agregarAbono(data)
+                        toggleAbono()
                     })}>
                         <i className="bi bi-check"> </i> Guardar
                     </Button>
