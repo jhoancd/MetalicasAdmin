@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-  Col, Table, Card, CardTitle, CardBody, Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, InputGroupText, InputGroup
+  Col, Table, Card, CardTitle, CardBody, Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, InputGroupText, InputGroup, Container
 } from "reactstrap";
 import { hoy, moneda } from "../../components/dashboard/tools";
 import { useForm } from 'react-hook-form';
@@ -166,6 +166,14 @@ const Gastos = () => {
               </InputGroupText>
               <Input placeholder="Buscar por factura  " type="text" />
             </InputGroup> */}
+            <Container>
+              <Col className="d-block d-sm-none">
+                <h1>Mobile</h1>
+              </Col>
+              <Col className="d-none d-lg-none">
+                <h1>Pc</h1>
+              </Col>
+            </Container>
             <Table bordered striped responsive hover>
               <thead>
                 <tr>
