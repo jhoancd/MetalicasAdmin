@@ -62,7 +62,6 @@ const Ventas = () => {
   const [modalFactura, setModalFactura] = useState(false);
   const toggleFactura = () => setModalFactura(!modalFactura);
 
-
   // QUERY HISTORIAL
   const registrarHistorial = (tipo, almacen, descripcion) => {
     let fecha = new Date()
@@ -122,7 +121,7 @@ const Ventas = () => {
 
   useEffect(() => {
     obtenerVentas()
-  })
+  }, [])
   return (
     <div>
       <Toaster

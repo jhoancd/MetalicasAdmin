@@ -30,7 +30,7 @@ export default function ModalDetallesPagos({ modalPagos, togglePagos, detallesFa
                         <tbody>
                             {
                                 historial.map((val, key) => {
-                                    return (<tr>
+                                    return (<tr key={key}>
                                         <td>{val.fecha}</td>
                                         <td>{moneda(val.abono)}</td>
                                         <td>{val.metodo}</td>
