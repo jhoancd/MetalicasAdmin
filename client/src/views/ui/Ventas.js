@@ -52,6 +52,7 @@ const Ventas = () => {
     "nombreRedes": "",
     "redesSociales": false
   })
+  const [id, setId] = useState()
 
 
   //MODAL REGISTRAR VENTA
@@ -108,6 +109,17 @@ const Ventas = () => {
     }).catch((err) => {
       notifyError(`Error al agregar venta: ${err}`);
     })
+  }
+
+  const id_get = (id) => {
+    setId(id)
+    console.log(id)
+  }
+
+  const updateData = (val) => {
+    setDetallesFactura(JSON.parse(val.venta));
+    setDetallesPago(val.pagos)
+
   }
 
 
@@ -175,7 +187,7 @@ const Ventas = () => {
               </InputGroupText>
               <Input placeholder="Buscar por factura" type="number" />
             </InputGroup>
-            <Table bordered striped responsive hover>
+            <Table bordered responsive hover>
               <thead>
                 <tr>
                   <th>Fecha</th>
@@ -213,11 +225,13 @@ const Ventas = () => {
                     </td>
                     <td>{moneda(sum(venta))}</td>
                     <td>
-                      <Button color="outline-primary" onClick={() => { toggleFactura(); setDetallesFactura(venta); setDetallesPago(val.pagos) }} size="sm"><i className="bi bi-file-earmark-text"> </i> Detalles</Button>
+                      <Button color="outline-primary" onClick={() => { id_get(val.id); toggleFactura(); setDetallesFactura(venta); setDetallesPago(val.pagos) }} size="sm"><i className="bi bi-file-earmark-text"> </i> Detalles</Button>
                     </td>
                   </tr>
 
+
                   )
+
                 })}
               </tbody>
             </Table>
