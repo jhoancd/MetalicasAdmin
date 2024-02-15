@@ -1,17 +1,80 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Container, Row, Col, Table, Card, CardTitle, CardBody, Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, InputGroupText, InputGroup
+  Col, Table, Card, CardTitle, CardBody, Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, InputGroupText, InputGroup
 } from "reactstrap";
+import { hoy, moneda } from "../../components/dashboard/tools";
+import { useForm } from 'react-hook-form';
+import toast, { Toaster } from 'react-hot-toast';
+import Axios from "axios"
+import Pill from "../../components/dashboard/Pill";
+
 
 const Gastos = () => {
+  const notify = (msg) => toast.success(msg);
+  const notifyError = (msg) => toast.error(msg);
 
+  const { register, handleSubmit, reset } = useForm({
+    defaultValues: {
+      fecha: hoy()
+    }
+  })
+
+  const [gastos, setGastos] = useState([]);
   const [modalGasto, setModalGasto] = useState(false);
   const toggle = () => setModalGasto(!modalGasto);
 
+  // QUERY OBTENER GASTOS
+  const obtenerGastos = () => {
+    Axios.get("http://192.168.20.41:3001/obtenerGastos").then((res) => {
+      setGastos(res.data)
+    }).catch((err) => {
+      notifyError(`Error al obtener ventas: ${err}`);
+    })
+  }
+
+  // QUERY AGREGAR GASTOS
+  const agregarGasto = (data) => {
+    Axios.post("http://192.168.20.41:3001/agregarGasto", {
+      fecha: data.fecha,
+      descripcion: data.descripcion,
+      motivo: data.motivo,
+      almacen: data.almacen,
+      valor: data.valor
+    }).then(() => {
+      notify("Agregado correctamente");
+      toggle()
+    }).catch((err) => {
+      notifyError(`Error al agregar gasto: ${err}`);
+    })
+  }
+
+  useEffect(() => {
+    obtenerGastos();
+  })
+
   return (
-
-
     <div>
+
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        gutter={8}
+        containerClassName=""
+        containerStyle={{}}
+        toastOptions={{
+          // Define default options
+          className: '',
+          duration: 5000,
+          success: {
+            duration: 3000,
+            theme: {
+              primary: 'green',
+              secondary: 'black',
+            },
+          },
+        }}
+      />
+
       {/* MODAL REGISTRAR GASTO */}
       <div>
         <Modal isOpen={modalGasto} toggle={toggle} fullscreen="sm" size="lg" scrollable={false}>
@@ -20,44 +83,49 @@ const Gastos = () => {
             <Form>
               <FormGroup>
                 <Label for="fecha">Fecha</Label>
-                <Input
-                  name="fecha"
+                <input
+                  {...register("fecha")}
+                  className="form-control"
                   type="date"
                 />
               </FormGroup>
               <FormGroup>
                 <Label for="descripcion">Descripcion</Label>
-                <Input
-                  name="descripcion"
+                <input
+                  {...register("descripcion")}
+                  className="form-control"
                   type="text"
                 />
               </FormGroup>
               <FormGroup>
                 <Label for="motivo">Motivo</Label>
-                <Input
-                  name="motivo"
-                  type="select"
+                <select
+                  {...register("motivo")}
+                  className="form-control"
                 >
                   <option value="compra">Compra</option>
                   <option value="adelanto">Adelanto</option>
                   <option value="inversion">Inversión</option>
-                </Input>
+                  <option value="sueldo">Sueldo</option>
+                </select>
               </FormGroup>
               <FormGroup>
                 <Label for="almacen">Almacen</Label>
-                <Input
-                  name="almacen"
+                <select
+                  {...register("almacen")}
+                  className="form-control"
                   type="select"
                 >
-                  <option value="danfel">Danfel</option>
-                  <option value="dyf">DyF</option>
-                  <option value="nathan">Nathan</option>
-                </Input>
+                  <option value="Danfel">Danfel</option>
+                  <option value="Dyf">DyF</option>
+                  <option value="Nathan">Nathan</option>
+                </select>
               </FormGroup>
               <FormGroup>
                 <Label for="valor">Valor</Label>
-                <Input
-                  name="valor"
+                <input
+                  {...register("valor")}
+                  className="form-control"
                   type="number"
                 />
               </FormGroup>
@@ -67,12 +135,19 @@ const Gastos = () => {
             <Button color="outline-danger" onClick={toggle}>
               <i className="bi bi-x"> </i> Cancelar
             </Button>
-            <Button color="primary" onClick={toggle}>
+            <Button color="primary" onClick={
+              handleSubmit((data) => {
+                agregarGasto(data)
+                toggle()
+                reset()
+              })
+            }>
               <i className="bi bi-check"> </i> Guardar
             </Button>{' '}
           </ModalFooter>
         </Modal>
       </div>
+
       <Col lg="12">
         <Card>
           <CardTitle tag="h6" className="border-bottom p-3 mb-0 separar">
@@ -102,34 +177,17 @@ const Gastos = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <th>2/02/2024</th>
-                  <td>12 Perillas</td>
-                  <td><span className="badge text-bg-danger rounded-pill"><i className="bi bi-arrow-down"> </i>Compra</span></td>
-                  <td>Danfel</td>
-                  <td>$2.600.000</td>
-                </tr>
-                <tr>
-                  <th>2/02/2024</th>
-                  <td>Ely</td>
-                  <td><span className="badge text-bg-warning rounded-pill"><i className="bi bi-cash"> </i>Adelanto</span></td>
-                  <td>Danfel</td>
-                  <td>$400.000</td>
-                </tr>
-                <tr>
-                  <th>2/02/2024</th>
-                  <td>Batidora 12Lt</td>
-                  <td><span className="badge text-bg-primary rounded-pill"><i className="bi bi-arrow-repeat"> </i>Inversión</span></td>
-                  <td>DyF</td>
-                  <td>$2.600.000</td>
-                </tr>
-                <tr>
-                  <th>2/02/2024</th>
-                  <td>Sueldos</td>
-                  <td><span className="badge text-bg-secondary rounded-pill"><i className="bi bi-wallet2"> </i>Sueldo</span></td>
-                  <td>DyF</td>
-                  <td>$2.600.000</td>
-                </tr>
+                {
+                  gastos.map((val, key) => {
+                    return (<tr key={val.id}>
+                      <th>{val.fecha}</th>
+                      <td>{val.descripcion}</td>
+                      <td><Pill motivo={val.motivo} /></td>
+                      <td>{val.almacen}</td>
+                      <td>{moneda(val.valor)}</td>
+                    </tr>)
+                  })
+                }
 
               </tbody>
             </Table>

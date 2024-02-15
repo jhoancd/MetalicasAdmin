@@ -169,6 +169,37 @@ app.delete("/eliminarInventario/:id", (req, res) => {
     )
 });
 
+// Agregar Gasto
+app.post("/agregarGasto", (req, res) => {
+    const fecha = req.body.fecha
+    const descripcion = req.body.descripcion
+    const motivo = req.body.motivo
+    const almacen = req.body.almacen
+    const valor = req.body.valor
+
+    db.query("INSERT INTO gastos(fecha,descripcion,motivo,almacen,valor) VALUES(?,?,?,?,?)", [fecha, descripcion, motivo, almacen, valor],
+        (err, result) => {
+            if (err) {
+                console.log(err);
+            } else {
+                res.send(result)
+            }
+        }
+    )
+})
+
+// Obtener Gastos
+app.get("/obtenerGastos", (req, res) => {
+    db.query("SELECT * FROM gastos ORDER BY id DESC",
+        (err, resul) => {
+            if (err) {
+                console.log(err)
+            } else {
+                res.send(resul)
+            }
+        }
+    )
+})
 
 
 app.listen(3001, () => {

@@ -55,9 +55,7 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
         <Modal isOpen={modalVenta} toggle={toggle} fullscreen="sm" size="lg" scrollable={true} animation="false">
             <ModalHeader toggle={toggle}><i className="bi bi-cart-plus"> </i>Registrar venta</ModalHeader>
             <ModalBody>
-                <Form onSubmit={handleSubmit((data) => {
-                    console.log(data)
-                })}>
+                <Form>
                     <FormGroup row>
                         <Col xs={6} md={6}>
                             <label htmlFor="factura">Factura</label>
