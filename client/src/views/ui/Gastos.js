@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-  Col, Table, Card, CardTitle, CardBody, Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, InputGroupText, InputGroup, Container
+  Col, Table, Card, CardTitle, CardBody, CardHeader, CardText, Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, InputGroupText, InputGroup, Container, CardFooter
 } from "reactstrap";
 import { hoy, moneda } from "../../components/dashboard/tools";
 import { useForm } from 'react-hook-form';
@@ -159,46 +159,65 @@ const Gastos = () => {
               <Button color="primary" onClick={toggle} size="sm"><i className="bi bi-plus"> </i>Agregar gasto</Button>
             </div>
           </CardTitle>
-          <CardBody className="tabla">
+          <CardBody className="tabla" scrollable>
             {/* <InputGroup style={{ marginBottom: "10px" }}>
               <InputGroupText>
                 <i className="bi bi-search"></i>
               </InputGroupText>
               <Input placeholder="Buscar por factura  " type="text" />
             </InputGroup> */}
-            <Container>
-              <Col className="d-block d-sm-none">
-                <h1>Mobile</h1>
-              </Col>
-              <Col className="d-none d-lg-none">
-                <h1>Pc</h1>
-              </Col>
-            </Container>
-            <Table bordered striped responsive hover>
-              <thead>
-                <tr>
-                  <th>Fecha</th>
-                  <th>Descripcion</th>
-                  <th>Motivo</th>
-                  <th>Almacen</th>
-                  <th>Valor</th>
-                </tr>
-              </thead>
-              <tbody>
-                {
-                  gastos.map((val, key) => {
-                    return (<tr key={val.id}>
-                      <th>{val.fecha}</th>
-                      <td>{val.descripcion}</td>
-                      <td><Pill motivo={val.motivo} /></td>
-                      <td>{val.almacen}</td>
-                      <td>{moneda(val.valor)}</td>
-                    </tr>)
-                  })
-                }
+            <Col className="d-block d-sm-none">
+              {
+                gastos.map((val, key) => {
+                  return (<Card key={key}>
+                    <CardHeader>
+                      <div className="d-flex justify-content-between">
+                        <Pill motivo={val.motivo} />
+                        {val.fecha}
+                      </div>
+                    </CardHeader>
+                    <CardBody>
+                      <CardTitle tag="span">
+                      </CardTitle>
+                      <CardText>
+                        {val.descripcion}
+                      </CardText>
+                    </CardBody>
+                    <CardFooter>
+                      {moneda(val.valor)}
+                    </CardFooter>
+                  </Card>)
+                })
+              }
 
-              </tbody>
-            </Table>
+            </Col>
+            <Col className="d-none d-xl-block d-xxl-none">
+              <Table bordered striped responsive hover>
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Descripcion</th>
+                    <th>Motivo</th>
+                    <th>Almacen</th>
+                    <th>Valor</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    gastos.map((val, key) => {
+                      return (<tr key={val.id}>
+                        <th>{val.fecha}</th>
+                        <td>{val.descripcion}</td>
+                        <td><Pill motivo={val.motivo} /></td>
+                        <td>{val.almacen}</td>
+                        <td>{moneda(val.valor)}</td>
+                      </tr>)
+                    })
+                  }
+
+                </tbody>
+              </Table>
+            </Col>
           </CardBody>
         </Card>
       </Col>
