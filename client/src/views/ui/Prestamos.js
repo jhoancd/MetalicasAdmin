@@ -9,7 +9,7 @@ import Axios from "axios"
 import Pill from "../../components/dashboard/Pill";
 
 
-const Gastos = () => {
+const Prestamos = () => {
   const notify = (msg) => toast.success(msg);
   const notifyError = (msg) => toast.error(msg);
 
@@ -78,7 +78,7 @@ const Gastos = () => {
       {/* MODAL REGISTRAR GASTO */}
       <div>
         <Modal isOpen={modalGasto} toggle={toggle} fullscreen="sm" size="lg" scrollable={false}>
-          <ModalHeader toggle={toggle}><i className="bi bi-arrow-down"> </i>Registrar gasto</ModalHeader>
+          <ModalHeader toggle={toggle}><i className="bi bi-arrow-down"> </i>Prestamos</ModalHeader>
           <ModalBody>
             <Form>
               <FormGroup>
@@ -148,51 +148,82 @@ const Gastos = () => {
         </Modal>
       </div>
 
-      <Col lg="12">
+      <Col>
         <Card>
           <CardTitle tag="h6" className="border-bottom p-3 mb-0 separar">
             <span>
-              <i className="bi bi-arrow-down me-2"> </i>
-              Gastos
+              <i className="bi bi-bank"> </i>
+              Prestamos
             </span>
             <div>
-              <Button color="primary" onClick={toggle} size="sm"><i className="bi bi-plus"> </i>Agregar gasto</Button>
+              <select
+                {...register("motivo")}
+                className="form-control"
+              >
+                <option value="Seleccionar">Seleccionar un nombre</option>
+                <option value="Vanesa">Vanesa</option>
+                <option value="Mario">Mario</option>
+                <option value="Eddy">Eddy</option>
+                <option value="Jhoan">Jhoan</option>
+              </select>
             </div>
           </CardTitle>
           <CardBody className="tabla" scrollable>
-            {/* <InputGroup style={{ marginBottom: "10px" }}>
-              <InputGroupText>
-                <i className="bi bi-search"></i>
-              </InputGroupText>
-              <Input placeholder="Buscar por factura  " type="text" />
-            </InputGroup> */}
-            {
-              <Table bordered striped responsive hover>
-                <thead>
-                  <tr>
-                    <th>Fecha</th>
-                    <th>Descripcion</th>
-                    <th>Motivo</th>
-                    <th>Almacen</th>
-                    <th>Valor</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    gastos.map((val, key) => {
-                      return (<tr key={val.id}>
-                        <th>{val.fecha}</th>
-                        <td>{val.descripcion}</td>
-                        <td><Pill motivo={val.motivo} /></td>
-                        <td>{val.almacen}</td>
-                        <td>{moneda(val.valor)}</td>
-                      </tr>)
-                    })
-                  }
+            <div className="groupText">
+              <div className="row">
+                <div className="col-6">
+                  <span>Datos <br />
+                    <span>
+                      <p className="fw-bold d-inline text-dark-emphasis">Nombre:</p> <p className="fw-normal d-inline text-black">Jhoan</p>
+                    </span><br />
+                    <span>
+                      <p className="fw-bold d-inline text-dark-emphasis">Fecha:</p> <p className="fw-normal d-inline text-black">15/02/2024</p>
+                    </span>
+                  </span>
+                </div>
+                <div className="col-6">
+                  <Button size="sm" color="success" className="mb-1 me-2"><i className="bi bi-plus"></i> Abonar</Button>
+                  <Button size="sm" color="secondary" className="mb-1 me-2"><i className="bi bi-bank"></i> Prestamo</Button>
+                </div>
+              </div>
+            </div>
+            <div className='row '>
+              <div className="groupText">
+                <span>Resumen <br />
+                  <span>
+                    <p className="fw-bold d-inline text-dark-emphasis">Prestamo:</p> <p className="fw-normal d-inline text-black">$1.700.000</p>
+                  </span><br />
+                  <span>
+                    <p className="fw-bold d-inline text-dark-emphasis">Abonado:</p> <p className="fw-normal d-inline text-black">$900.000</p>
+                  </span><br />
+                  <span>
+                    <p className="fw-bold d-inline text-dark-emphasis">Restante:</p> <p className="fw-normal d-inline text-black">$800.000</p>
+                  </span><br />
+                </span>
+              </div>
+            </div>
+            <hr />
+            <Table bordered responsive hover>
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Abono</th>
+                  <th>Saldo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  gastos.map((val, key) => {
+                    return (<tr key={val.id}>
+                      <th>{val.fecha}</th>
+                      <td>$150.000</td>
+                      <td>$1.450.000</td>
+                    </tr>)
+                  })
+                }
 
-                </tbody>
-              </Table>
-            }
+              </tbody>
+            </Table>
           </CardBody>
         </Card>
       </Col>
@@ -200,4 +231,4 @@ const Gastos = () => {
   );
 };
 
-export default Gastos;
+export default Prestamos;

@@ -9,11 +9,14 @@ import { useEffect, useState } from "react";
 export default function Modalfactura({ modalFactura, toggleFactura, detallesFactura, ventas, obtenerVentas }) {
     let historial;
     let totalAbono = 0;
+    let articulos = []
 
     if (ventas == "") {
         historial = []
     } else {
         historial = JSON.parse(ventas)
+        articulos = Object.values(detallesFactura.items)
+
     }
 
     // MODAL PAGOS
@@ -25,7 +28,7 @@ export default function Modalfactura({ modalFactura, toggleFactura, detallesFact
     const toggleAbono = () => setModalAbono(!modalAbono);
 
     useEffect(() => {
-        obtenerVentas()
+        obtenerVentas();
     })
 
     return (
@@ -82,36 +85,24 @@ export default function Modalfactura({ modalFactura, toggleFactura, detallesFact
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>{detallesFactura.items.item1.cantidad}</td>
-                                    <td>{detallesFactura.items.item1.articulo}</td>
-                                    <td>{moneda(detallesFactura.items.item1.precio)}</td>
-                                    <td>{moneda(detallesFactura.items.item1.cantidad * detallesFactura.items.item1.precio)}</td>
-                                </tr>
-                                <tr>
-                                    <td>{detallesFactura.items.item2.cantidad}</td>
-                                    <td>{detallesFactura.items.item2.articulo}</td>
-                                    <td>{moneda(detallesFactura.items.item2.precio)}</td>
-                                    <td>{moneda(detallesFactura.items.item2.cantidad * detallesFactura.items.item2.precio)}</td>
-                                </tr>
-                                <tr>
-                                    <td>{detallesFactura.items.item3.cantidad}</td>
-                                    <td>{detallesFactura.items.item3.articulo}</td>
-                                    <td>{moneda(detallesFactura.items.item3.precio)}</td>
-                                    <td>{moneda(detallesFactura.items.item3.cantidad * detallesFactura.items.item3.precio)}</td>
-                                </tr>
-                                <tr>
-                                    <td>{detallesFactura.items.item4.cantidad}</td>
-                                    <td>{detallesFactura.items.item4.articulo}</td>
-                                    <td>{moneda(detallesFactura.items.item4.precio)}</td>
-                                    <td>{moneda(detallesFactura.items.item4.cantidad * detallesFactura.items.item4.precio)}</td>
-                                </tr>
-                                <tr>
-                                    <td>{detallesFactura.items.item5.cantidad}</td>
-                                    <td>{detallesFactura.items.item5.articulo}</td>
-                                    <td>{moneda(detallesFactura.items.item5.precio)}</td>
-                                    <td>{moneda(detallesFactura.items.item5.cantidad * detallesFactura.items.item5.precio)}</td>
-                                </tr>
+                                {
+                                    articulos.map((val, key) => {
+                                        if (val.articulos == "") {
+                                            return (<tr>
+                                                <td>Falso</td>
+                                            </tr>)
+                                        } else {
+                                            return (<tr key={key}>
+                                                <td>{val.cantidad}</td>
+                                                <td>{val.articulo}</td>
+                                                <td>{moneda(val.precio)}</td>
+                                                <td>{moneda(val.cantidad * val.precio)}</td>
+                                            </tr>
+                                            )
+                                        }
+                                    })
+                                }
+
                             </tbody>
                         </table>
                     </div>

@@ -28,9 +28,9 @@ const navigation = [
     icon: "bi bi-arrow-down",
   },
   {
-    title: "Grid",
-    href: "/grid",
-    icon: "bi bi-columns",
+    title: "Prestamos",
+    href: "/Prestamos",
+    icon: "bi bi-bank",
   },
   {
     title: "Table",

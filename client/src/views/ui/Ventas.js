@@ -111,11 +111,6 @@ const Ventas = () => {
     })
   }
 
-  const id_get = (id) => {
-    setId(id)
-    console.log(id)
-  }
-
   const updateData = (val) => {
     setDetallesFactura(JSON.parse(val.venta));
     setDetallesPago(val.pagos)
@@ -225,7 +220,7 @@ const Ventas = () => {
                     </td>
                     <td>{moneda(sum(venta))}</td>
                     <td>
-                      <Button color="outline-primary" onClick={() => { id_get(val.id); toggleFactura(); setDetallesFactura(venta); setDetallesPago(val.pagos) }} size="sm"><i className="bi bi-file-earmark-text"> </i> Detalles</Button>
+                      <Button color="outline-primary" onClick={() => { toggleFactura(); setDetallesFactura(venta); setDetallesPago(val.pagos) }} size="sm"><i className="bi bi-file-earmark-text"> </i> Detalles</Button>
                     </td>
                   </tr>
 

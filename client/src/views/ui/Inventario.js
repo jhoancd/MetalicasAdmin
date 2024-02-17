@@ -435,7 +435,7 @@ const Inventario = () => {
               </InputGroupText>
               <Input placeholder="Buscar" type="text" onChange={(e) => buscador(e.target.value)} />
             </InputGroup>
-            <Table bordered striped responsive hover>
+            <Table bordered responsive hover>
               <thead>
                 <tr>
                   <th>Descripcion</th>

@@ -1,45 +1,71 @@
 import {
     Col, Table, Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label
 } from "reactstrap";
+import Axios from 'axios';
 import { useForm } from 'react-hook-form';
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import toast, { Toaster } from 'react-hot-toast';
 import { sum, moneda, hoy } from "../tools"
 
 
-export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }) {
 
-    const { register, handleSubmit, watch } = useForm({
+export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }) {
+    const notify = (msg) => toast.success(msg);
+    const notifyError = (msg) => toast.error(msg);
+    const [n, setN] = useState(1);
+    let itemDefault = []
+    let articulos = [];
+    const forms = () => {
+        for (let i = 1; i <= n; i++) {
+            itemDefault.push(`{
+                item${n}: {
+                    precio: ${0},
+                    cantidad:${0}
+                }
+            }`
+            )
+
+            articulos.push(<tr>
+                <td>
+                    <input className="form-control"
+                        {...register(`items.item${i}.cantidad`, { valueAsNumber: true })}
+                        type="number"
+                    />
+                </td>
+                <td>
+                    <select input className="form-control"
+                        {...register(`items.item${i}.articulo`)}
+                        type="select"
+                    >
+                        <option value=""></option>
+                        {
+                            inventario.map((val, key) => {
+                                return <option value={val.descripcion}>{val.descripcion}</option>
+                            })
+                        }
+
+                    </select>
+                </td>
+                <td>
+                    <input className="form-control"
+                        {...register(`items.item${i}.precio`, { valueAsNumber: true })}
+                        type="number"
+                    />
+                </td>
+            </tr>)
+        }
+    }
+
+    const { register, handleSubmit, watch, reset } = useForm({
         defaultValues: {
             fecha: hoy(),
-            items: {
-                item1: {
-                    precio: 0,
-                    cantidad: 0
-                },
-                item2: {
-                    precio: 0,
-                    cantidad: 0
-                },
-                item3: {
-                    precio: 0,
-                    cantidad: 0
-                },
-                item4: {
-                    precio: 0,
-                    cantidad: 0
-                },
-                item5: {
-                    precio: 0,
-                    cantidad: 0
-                }
-            }
-
+            items: itemDefault
         }
     })
 
     const data = watch()
     const pago = watch("abono")
-
+    const [inventario, setInventario] = useState([])
 
     const [redesShow, setRedesShow] = useState("none")
     const handleRedes = () => {
@@ -47,11 +73,42 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
             setRedesShow("block")
         } else {
             setRedesShow("none")
-
         }
     }
 
+    // QUERY OBTENER INVENTARIO
+    const obtenerInventario = () => {
+        Axios.get("http://192.168.20.41:3001/obtenerInventario").then((res) => {
+            setInventario(res.data)
+        }).catch((err) => {
+            notifyError(`Error al obtener inventario: ${err}`);
+        })
+    }
+
+    useEffect(() => {
+        obtenerInventario()
+    })
+
     return (<div>
+        <Toaster
+            position="top-center"
+            reverseOrder={false}
+            gutter={8}
+            containerClassName=""
+            containerStyle={{}}
+            toastOptions={{
+                // Define default options
+                className: '',
+                duration: 5000,
+                success: {
+                    duration: 3000,
+                    theme: {
+                        primary: 'green',
+                        secondary: 'black',
+                    },
+                },
+            }}
+        />
         <Modal isOpen={modalVenta} toggle={toggle} fullscreen="sm" size="lg" scrollable={true} animation="false">
             <ModalHeader toggle={toggle}><i className="bi bi-cart-plus"> </i>Registrar venta</ModalHeader>
             <ModalBody>
@@ -76,7 +133,18 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
                             <option value="Nathan">Nathan</option>
                         </select>
                     </FormGroup>
-                    <p>Articulos</p>
+                    <div className="row">
+                        <div className="col-6">
+                            <p>Articulos</p>
+                        </div>
+                        <div className="col-6">
+                            <div class="btn-group" role="group">
+                                <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => setN(n - 1)}><i className="bi bi-dash"></i></button>
+                                <button type="button" className="btn btn-md btn-outline-secondary" disabled>{n}</button>
+                                <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => setN(n + 1)}><i className="bi bi-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
                     <div className="tabla-articulos">
 
                         {/* TABLA DE ARTICULOS FACTURA */}
@@ -92,144 +160,16 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <input className="form-control"
-                                            {...register("items.item1.cantidad", { valueAsNumber: true })}
-                                            type="number"
-                                        />
-                                    </td>
-                                    <td>
-                                        <select input className="form-control"
-                                            {...register("items.item1.articulo")}
-                                            type="select"
-                                        >
-                                            <option value=""></option>
-                                            <option value="Asador de campana">Asador de campana</option>
-                                            <option value="">Carro de comidas rapidas, P40, V40, A Volcanica, F 2gal</option>
-                                            <option value="">Cocina 3S, 1D, 2S</option>
-                                            <option value="">Mesa de 120x60</option>
-                                            <option value="">Calentador VC, 50cm, E</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input className="form-control"
-                                            {...register("items.item1.precio", { valueAsNumber: true })}
-                                            type="number"
-                                        />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <input className="form-control"
-                                            {...register("items.item2.cantidad", { valueAsNumber: true })}
-                                            type="number"
-                                        />
-                                    </td>
-                                    <td>
-                                        <select input className="form-control"
-                                            {...register("items.item2.articulo")}
-                                            type="select"
-                                        >
-                                            <option value=""></option>
-                                            <option value="Asador de campana">Asador de campana</option>
-                                            <option value="">Carro de comidas rapidas, P40, V40, A Volcanica, F 2gal</option>
-                                            <option value="">Cocina 3S, 1D, 2S</option>
-                                            <option value="">Mesa de 120x60</option>
-                                            <option value="">Calentador VC, 50cm, E</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input className="form-control"
-                                            {...register("items.item2.precio", { valueAsNumber: true })}
-                                            type="number"
-                                        />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <input className="form-control"
-                                            {...register("items.item3.cantidad", { valueAsNumber: true })}
-                                            type="number"
-                                        />
-                                    </td>
-                                    <td>
-                                        <select input className="form-control"
-                                            {...register("items.item3.articulo")}
-                                            type="select"
-                                        >
-                                            <option value=""></option>
-                                            <option value="Asador de campana">Asador de campana</option>
-                                            <option value="">Carro de comidas rapidas, P40, V40, A Volcanica, F 2gal</option>
-                                            <option value="">Cocina 3S, 1D, 2S</option>
-                                            <option value="">Mesa de 120x60</option>
-                                            <option value="">Calentador VC, 50cm, E</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input className="form-control"
-                                            {...register("items.item3.precio", { valueAsNumber: true })}
-                                            type="number"
-                                        />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <input className="form-control"
-                                            {...register("items.item4.cantidad", { valueAsNumber: true })}
-                                            type="number"
-                                        />
-                                    </td>
-                                    <td>
-                                        <select input className="form-control"
-                                            {...register("items.item4.articulo")}
-                                            type="select"
-                                        >
-                                            <option value=""></option>
-                                            <option value="Asador de campana">Asador de campana</option>
-                                            <option value="">Carro de comidas rapidas, P40, V40, A Volcanica, F 2gal</option>
-                                            <option value="">Cocina 3S, 1D, 2S</option>
-                                            <option value="">Mesa de 120x60</option>
-                                            <option value="">Calentador VC, 50cm, E</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input className="form-control"
-                                            {...register("items.item4.precio", { valueAsNumber: true })}
-                                            type="number"
-                                        />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <input className="form-control"
-                                            {...register("items.item5.cantidad", { valueAsNumber: true })}
-                                            type="number"
-                                        />
-                                    </td>
-                                    <td>
-                                        <select input className="form-control"
-                                            {...register("items.item5.articulo")}
-                                            type="select"
-                                        >
-                                            <option value=""></option>
-                                            <option value="Asador de campana">Asador de campana</option>
-                                            <option value="">Carro de comidas rapidas, P40, V40, A Volcanica, F 2gal</option>
-                                            <option value="">Cocina 3S, 1D, 2S</option>
-                                            <option value="">Mesa de 120x60</option>
-                                            <option value="">Calentador VC, 50cm, E</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input className="form-control"
-                                            {...register("items.item5.precio", { valueAsNumber: true })}
-                                            type="number"
-                                        />
-                                    </td>
-                                </tr>
+                                {
+                                    forms(n)
+                                }
+                                {articulos.map(val => {
+                                    return (val)
+                                })
+                                }
                             </tbody>
                         </Table>
-                        <div className="mb-2 fs-5 text-end"><b>Total: </b> {moneda(sum(data))}</div>
+                        <div className="mb-2 fs-5 text-end"><b>Total: </b> {/*moneda(sum(data))*/}</div>
 
                         {/*FIN TABLA DE ARTICULOS FACTURA */}
 
@@ -271,13 +211,15 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
 
             </ModalBody>
             <ModalFooter>
-                <span style={{ padding: "0 4px" }} className={`rounded-pill ${sum(data) <= pago ? "text-bg-success" : "text-bg-warning"}`}><i className={`bi ${sum(data) <= pago ? "bi-check-circle" : "bi-exclamation-circle"}`}> </i></span>
+                {/* <span style={{ padding: "0 4px" }} className={`rounded-pill ${sum(data) <= pago ? "text-bg-success" : "text-bg-warning"}`}><i className={`bi ${sum(data) <= pago ? "bi-check-circle" : "bi-exclamation-circle"}`}> </i></span> */}
                 <Button color="outline-danger" onClick={toggle}>
                     <i className="bi bi-x"> </i> Cancelar
                 </Button>
-                <Button color="primary" type="submit" onClick={handleSubmit((data) => {
-                    agregarVenta(data)
-                })}>
+                <Button color="primary" type="submit" onClick={
+                    handleSubmit((data) => {
+                        agregarVenta(data)
+                        reset()
+                    })}>
                     <i className="bi bi-check"> </i> Guardar
                 </Button>{' '}
             </ModalFooter>

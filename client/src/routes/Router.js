@@ -12,7 +12,7 @@ const Inventario = lazy(() => import("../views/ui/Inventario.js"));
 const Ventas = lazy(() => import("../views/ui/Ventas.js"));
 const Historial = lazy(() => import("../views/ui/Historial.js"));
 const Gastos = lazy(() => import("../views/ui/Gastos"));
-const Grid = lazy(() => import("../views/ui/Grid"));
+const Prestamos = lazy(() => import("../views/ui/Prestamos"));
 const Tables = lazy(() => import("../views/ui/Tables"));
 const Forms = lazy(() => import("../views/ui/Forms"));
 const Breadcrumbs = lazy(() => import("../views/ui/Breadcrumbs"));
@@ -29,9 +29,9 @@ const ThemeRoutes = [
       { path: "/about", exact: true, element: <About /> },
       { path: "/inventario", exact: true, element: <Inventario /> },
       { path: "/ventas", exact: true, element: <Ventas /> },
-      { path: "/historial", exact: true, element: <Historial /> },
       { path: "/gastos", exact: true, element: <Gastos /> },
-      { path: "/grid", exact: true, element: <Grid /> },
+      { path: "/prestamos", exact: true, element: <Prestamos /> },
+      { path: "/historial", exact: true, element: <Historial /> },
       { path: "/table", exact: true, element: <Tables /> },
       { path: "/forms", exact: true, element: <Forms /> },
       { path: "/breadcrumbs", exact: true, element: <Breadcrumbs /> },
