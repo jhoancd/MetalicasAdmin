@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import Axios from "axios"
 import toast, { Toaster } from 'react-hot-toast';
 import { hoy } from "../tools"
+import {url} from "../var.js"
 
 
 export default function ModalRealizarAbono({ modalAbono, toggleAbono, detallesFactura, ventas, obtenerVentas }) {
@@ -20,7 +21,7 @@ export default function ModalRealizarAbono({ modalAbono, toggleAbono, detallesFa
 
     // QUERY AGREGAR ABONO
     const agregarAbono = (data) => {
-        Axios.put("http://192.168.20.41:3001/agregarAbono", {
+        Axios.put(`${url}/agregarAbono`, {
             factura: detallesFactura.factura,
             abono: data,
             historial: ventas

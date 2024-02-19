@@ -4,6 +4,7 @@ import {
   Col, Table, Card, CardTitle, CardBody, Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, InputGroupText, InputGroup
 } from "reactstrap";
 import toast, { Toaster } from 'react-hot-toast';
+import {url} from "../../components/dashboard/var.js"
 
 const Inventario = () => {
   const notify = (msg) => toast.success(msg);
@@ -79,7 +80,7 @@ const Inventario = () => {
 
     let fechaText = fecha.toLocaleString("es-ES", { weekday: "short", year: "numeric", month: "short", day: "numeric" }) + " a las " + addZero(hora);
 
-    Axios.post("http://192.168.20.41:3001/registrarHistorial", {
+    Axios.post(`${url}/registrarHistorial`, {
       almacenHistorial: almacen,
       descripcionHistorial: descripcion,
       fechaHistorial: fechaText,
@@ -92,7 +93,7 @@ const Inventario = () => {
 
   // QUERY OBTENER INVENTARIO
   const obtenerInventario = () => {
-    Axios.get("http://192.168.20.41:3001/obtenerInventario").then((res) => {
+    Axios.get(`${url}/obtenerInventario`).then((res) => {
       setInventario(res.data)
     }).catch((err) => {
       notifyError(`Error al obtener inventario: ${err}`);
@@ -101,7 +102,7 @@ const Inventario = () => {
 
   // QUERY AGREGAR INVENTARIO
   const agregarInventario = () => {
-    Axios.post("http://192.168.20.41:3001/agregarInventario", {
+    Axios.post(`${url}/agregarInventario`, {
       descripcion: descripcion,
       dyf: dyf,
       danfel: danfel,
@@ -121,7 +122,7 @@ const Inventario = () => {
 
   // QUERY TRASLADO INVENTARIO
   const trasladoInventario = () => {
-    Axios.put("http://192.168.20.41:3001/trasladoInventario", {
+    Axios.put(`${url}/trasladoInventario`, {
       id: id,
       descripcionTraslado: descripcionTraslado,
       almacenTrasladoDe: almacenTrasladoDe,
@@ -145,7 +146,7 @@ const Inventario = () => {
 
   //QUERY INGRESO INVENTARIO
   const ingresoInventario = () => {
-    Axios.put("http://192.168.20.41:3001/ingresoInventario", {
+    Axios.put(`${url}/ingresoInventario`, {
       id: id,
       almacenIngreso: almacenIngreso,
       cantidadIngreso: cantidadIngreso

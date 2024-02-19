@@ -5,6 +5,7 @@ import {
 } from "reactstrap";
 import toast, { Toaster } from 'react-hot-toast';
 import { sum, moneda } from "../../components/dashboard/tools"
+import {url} from "../../components/dashboard/var.js"
 import ModalRegistrarVenta from "../../components/dashboard/modal/ModalRegistarVenta";
 import ModalFactura from "../../components/dashboard/modal/ModalFactura";
 
@@ -52,7 +53,6 @@ const Ventas = () => {
     "nombreRedes": "",
     "redesSociales": false
   })
-  const [id, setId] = useState()
 
 
   //MODAL REGISTRAR VENTA
@@ -81,7 +81,7 @@ const Ventas = () => {
 
     let fechaText = fecha.toLocaleString("es-ES", { weekday: "short", year: "numeric", month: "short", day: "numeric" }) + " a las " + addZero(hora);
 
-    Axios.post("http://192.168.20.41:3001/registrarHistorial", {
+    Axios.post(`${url}/registrarHistorial`, {
       almacenHistorial: almacen,
       descripcionHistorial: descripcion,
       fechaHistorial: fechaText,
@@ -93,7 +93,7 @@ const Ventas = () => {
 
   // QUERY AGREGAR VENTA
   const agregarVenta = (data) => {
-    Axios.post("http://192.168.20.41:3001/agregarVenta", {
+    Axios.post(`${url}/agregarVenta`, {
       data: data,
       pagos: [{
         "fecha": data.fecha,
@@ -111,15 +111,8 @@ const Ventas = () => {
     })
   }
 
-  const updateData = (val) => {
-    setDetallesFactura(JSON.parse(val.venta));
-    setDetallesPago(val.pagos)
-
-  }
-
-
   const obtenerVentas = () => {
-    Axios.get("http://192.168.20.41:3001/obtenerVentas").then((res) => {
+    Axios.get(`${url}/obtenerVentas`).then((res) => {
       setVentas(res.data)
     }).catch((err) => {
       notifyError(`Error al obtener ventas: ${err}`);
@@ -128,7 +121,7 @@ const Ventas = () => {
 
   useEffect(() => {
     obtenerVentas()
-  }, [])
+  })
   return (
     <div>
       <Toaster
@@ -207,10 +200,11 @@ const Ventas = () => {
                       {
                         pagos.map((e) => {
                           totalAbono = totalAbono + e.abono;
+                          return ""
                         })
                       }
                       {
-                        sum(venta) <= totalAbono ?
+                       /* sum(venta) <= totalAbono*/ true ?
                           <span className="badge text-bg-success rounded-pill"><i className="bi bi-check-circle"> </i>Pago</span> :
                           <span className="badge text-bg-warning rounded-pill"><i className="bi bi-exclamation-circle"> </i>Pendiente</span>
                       }
@@ -218,7 +212,7 @@ const Ventas = () => {
                         <span style={{ display: "none" }}>{totalAbono = 0}</span>
                       }
                     </td>
-                    <td>{moneda(sum(venta))}</td>
+                    <td>{/*moneda(sum(venta))*/ "Total"}</td>
                     <td>
                       <Button color="outline-primary" onClick={() => { toggleFactura(); setDetallesFactura(venta); setDetallesPago(val.pagos) }} size="sm"><i className="bi bi-file-earmark-text"> </i> Detalles</Button>
                     </td>

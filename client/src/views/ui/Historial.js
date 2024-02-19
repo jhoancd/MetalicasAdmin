@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ItemHistorial from "../../components/dashboard/ItemHistorial";
+import {url} from "../../components/dashboard/var.js"
+
 
 import Axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
@@ -19,7 +21,7 @@ const Historial = () => {
   const [historial, setHistorial] = useState([]);
 
   const obtenerHistorial = () => {
-    Axios.get("http://192.168.20.41:3001/obtenerHistorial").then((res) => {
+    Axios.get(`${url}/obtenerHistorial`).then((res) => {
       setHistorial(res.data)
     }).catch((err) => {
       notifyError(`Error al obtener historial: ${err}`);

@@ -7,6 +7,8 @@ import { useForm } from 'react-hook-form';
 import toast, { Toaster } from 'react-hot-toast';
 import Axios from "axios"
 import Pill from "../../components/dashboard/Pill";
+import {url} from "../../components/dashboard/var.js"
+
 
 
 const Gastos = () => {
@@ -25,7 +27,7 @@ const Gastos = () => {
 
   // QUERY OBTENER GASTOS
   const obtenerGastos = () => {
-    Axios.get("http://192.168.20.41:3001/obtenerGastos").then((res) => {
+    Axios.get(`${url}/obtenerGastos`).then((res) => {
       setGastos(res.data)
     }).catch((err) => {
       notifyError(`Error al obtener ventas: ${err}`);
@@ -34,7 +36,7 @@ const Gastos = () => {
 
   // QUERY AGREGAR GASTOS
   const agregarGasto = (data) => {
-    Axios.post("http://192.168.20.41:3001/agregarGasto", {
+    Axios.post(`${url}/agregarGasto`, {
       fecha: data.fecha,
       descripcion: data.descripcion,
       motivo: data.motivo,
