@@ -4,8 +4,8 @@ import {
   Col, Table, Card, CardTitle, CardBody, Button, Input, InputGroupText, InputGroup
 } from "reactstrap";
 import toast, { Toaster } from 'react-hot-toast';
-import { sum, moneda } from "../../components/dashboard/tools"
-import {url} from "../../components/dashboard/var.js"
+import { sum, sumArticulos, moneda } from "../../components/dashboard/tools"
+import { url } from "../../components/dashboard/var.js"
 import ModalRegistrarVenta from "../../components/dashboard/modal/ModalRegistarVenta";
 import ModalFactura from "../../components/dashboard/modal/ModalFactura";
 
@@ -204,7 +204,7 @@ const Ventas = () => {
                         })
                       }
                       {
-                       /* sum(venta) <= totalAbono*/ true ?
+                        sum(venta) <= totalAbono ?
                           <span className="badge text-bg-success rounded-pill"><i className="bi bi-check-circle"> </i>Pago</span> :
                           <span className="badge text-bg-warning rounded-pill"><i className="bi bi-exclamation-circle"> </i>Pendiente</span>
                       }
@@ -212,7 +212,7 @@ const Ventas = () => {
                         <span style={{ display: "none" }}>{totalAbono = 0}</span>
                       }
                     </td>
-                    <td>{/*moneda(sum(venta))*/ "Total"}</td>
+                    <td>{moneda(sumArticulos(venta.items))}</td>
                     <td>
                       <Button color="outline-primary" onClick={() => { toggleFactura(); setDetallesFactura(venta); setDetallesPago(val.pagos) }} size="sm"><i className="bi bi-file-earmark-text"> </i> Detalles</Button>
                     </td>

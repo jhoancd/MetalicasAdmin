@@ -1,4 +1,15 @@
 // SUMA
+const sumArticulos = (n) => {
+    let mul1 = n.item1.precio * n.item1.cantidad
+    let mul2 = n.item2.precio * n.item2.cantidad
+    let mul3 = n.item3.precio * n.item3.cantidad
+    let mul4 = n.item4.precio * n.item4.cantidad
+    let mul5 = n.item5.precio * n.item5.cantidad
+
+    return mul1 + mul2 + mul3 + mul4 + mul5
+
+}
+
 const sum = (n) => {
     let mul1 = n.items.item1.precio * n.items.item1.cantidad
     let mul2 = n.items.item2.precio * n.items.item2.cantidad
@@ -10,6 +21,7 @@ const sum = (n) => {
 }
 
 // FORMATEAR MONEDA
+
 const moneda = (val) => {
     return `$${new Intl.NumberFormat().format(val)}`
 }
@@ -30,4 +42,4 @@ const hoy = (v) => {
 }
 
 
-export { sum, moneda, hoy }
+export { sum, moneda, hoy, sumArticulos }

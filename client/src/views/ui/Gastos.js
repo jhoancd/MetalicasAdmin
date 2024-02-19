@@ -36,7 +36,10 @@ const Gastos = () => {
 
   // QUERY AGREGAR GASTOS
   const agregarGasto = (data) => {
-    Axios.post(`${url}/agregarGasto`, {
+    Axios.post(`${url}/
+    
+    
+    agregarGasto`, {
       fecha: data.fecha,
       descripcion: data.descripcion,
       motivo: data.motivo,
