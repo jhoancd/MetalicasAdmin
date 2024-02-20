@@ -1,5 +1,8 @@
 import { Card, CardBody, CardSubtitle, CardTitle, Row, Col } from "reactstrap";
 import Chart from "react-apexcharts";
+import { hoy } from "./tools"
+import { obtenerVentas, ventas } from "../querys"
+import { useEffect, useState } from "react";
 
 const SalesChart = () => {
   const options = {
@@ -66,25 +69,37 @@ const SalesChart = () => {
     },
   ];
 
+  const [listVentas, setListVentas] = useState(ventas)
+  console.log(listVentas)
+
+
   return (
     <Card>
       <CardBody>
-        <CardTitle tag="h5">Sales Summary</CardTitle>
+        <CardTitle tag="h5">Resumen de ventas</CardTitle>
         <CardSubtitle className="text-muted" tag="h6">
-          Yearly Sales Report
+          Ventas totales
         </CardSubtitle>
         <div className="bg-primary text-white my-3 p-3 rounded">
           <Row>
+            <div className="input-group mb-3">
+              <span className="input-group-text">Desde</span>
+              <input type="date" className="form-control" />
+              <span className="input-group-text">Hasta</span>
+              <input type="date" value={hoy()} className="form-control" />
+            </div>
+          </Row>
+          <Row>
             <Col md="4">
-              <h6>Total Sales</h6>
+              <h6>Ventas totales</h6>
               <h4 className="mb-0 fw-bold">$10,345</h4>
             </Col>
             <Col md="4">
-              <h6>This Month</h6>
+              <h6>Hoy</h6>
               <h4 className="mb-0 fw-bold">$7,545</h4>
             </Col>
             <Col md="4">
-              <h6>This Week</h6>
+              <h6>Gastos</h6>
               <h4 className="mb-0 fw-bold">$1,345</h4>
             </Col>
           </Row>
