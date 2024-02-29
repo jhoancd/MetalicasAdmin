@@ -2,11 +2,20 @@ import {
     Col, Table, Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label
 } from "reactstrap";
 import { useForm } from 'react-hook-form';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { sum, moneda, hoy } from "../tools"
+import Axios from 'axios';
+import toast, { Toaster } from 'react-hot-toast';
+import {url} from "../var.js"
+
 
 
 export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }) {
+
+  const notifyError = (msg) => toast.error(msg);
+  const [inventario, setInventario] = useState([])
+
+
 
     const { register, handleSubmit, watch } = useForm({
         defaultValues: {
@@ -40,6 +49,19 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
     const data = watch()
     const pago = watch("abono")
 
+    const obtenerInventario = () =>{
+            Axios.get(`${url}/obtenerInventario`).then((res) => {
+              setInventario(res.data)
+            }).catch((err) => {
+              notifyError(`Error al obtener inventario: ${err}`);
+            })
+    }
+   
+    const articulos = () => {
+        return inventario.map((val) => {
+            return (<option value={val.descripcion}>{val.descripcion}</option>)
+        })
+    }
 
     const [redesShow, setRedesShow] = useState("none")
     const handleRedes = () => {
@@ -51,7 +73,31 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
         }
     }
 
+    useEffect(() => {
+        obtenerInventario()
+    })
+
     return (<div>
+           <Toaster
+        position="top-center"
+        reverseOrder={false}
+        gutter={8}
+        containerClassName=""
+        containerStyle={{}}
+        toastOptions={{
+          // Define default options
+          className: '',
+          duration: 5000,
+          success: {
+            duration: 3000,
+            theme: {
+              primary: 'green',
+              secondary: 'black',
+            },
+          },
+        }}
+      />
+
         <Modal isOpen={modalVenta} toggle={toggle} fullscreen="sm" size="lg" scrollable={true} animation="false">
             <ModalHeader toggle={toggle}><i className="bi bi-cart-plus"> </i>Registrar venta</ModalHeader>
             <ModalBody>
@@ -107,11 +153,7 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
                                             type="select"
                                         >
                                             <option value=""></option>
-                                            <option value="Asador de campana">Asador de campana</option>
-                                            <option value="">Carro de comidas rapidas, P40, V40, A Volcanica, F 2gal</option>
-                                            <option value="">Cocina 3S, 1D, 2S</option>
-                                            <option value="">Mesa de 120x60</option>
-                                            <option value="">Calentador VC, 50cm, E</option>
+                                            {articulos()}
                                         </select>
                                     </td>
                                     <td>
@@ -134,11 +176,7 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
                                             type="select"
                                         >
                                             <option value=""></option>
-                                            <option value="Asador de campana">Asador de campana</option>
-                                            <option value="">Carro de comidas rapidas, P40, V40, A Volcanica, F 2gal</option>
-                                            <option value="">Cocina 3S, 1D, 2S</option>
-                                            <option value="">Mesa de 120x60</option>
-                                            <option value="">Calentador VC, 50cm, E</option>
+                                            {articulos()}
                                         </select>
                                     </td>
                                     <td>
@@ -161,11 +199,7 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
                                             type="select"
                                         >
                                             <option value=""></option>
-                                            <option value="Asador de campana">Asador de campana</option>
-                                            <option value="">Carro de comidas rapidas, P40, V40, A Volcanica, F 2gal</option>
-                                            <option value="">Cocina 3S, 1D, 2S</option>
-                                            <option value="">Mesa de 120x60</option>
-                                            <option value="">Calentador VC, 50cm, E</option>
+                                            {articulos()}
                                         </select>
                                     </td>
                                     <td>
@@ -188,11 +222,7 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
                                             type="select"
                                         >
                                             <option value=""></option>
-                                            <option value="Asador de campana">Asador de campana</option>
-                                            <option value="">Carro de comidas rapidas, P40, V40, A Volcanica, F 2gal</option>
-                                            <option value="">Cocina 3S, 1D, 2S</option>
-                                            <option value="">Mesa de 120x60</option>
-                                            <option value="">Calentador VC, 50cm, E</option>
+                                            {articulos()}
                                         </select>
                                     </td>
                                     <td>
@@ -215,11 +245,7 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
                                             type="select"
                                         >
                                             <option value=""></option>
-                                            <option value="Asador de campana">Asador de campana</option>
-                                            <option value="">Carro de comidas rapidas, P40, V40, A Volcanica, F 2gal</option>
-                                            <option value="">Cocina 3S, 1D, 2S</option>
-                                            <option value="">Mesa de 120x60</option>
-                                            <option value="">Calentador VC, 50cm, E</option>
+                                            {articulos()}
                                         </select>
                                     </td>
                                     <td>
