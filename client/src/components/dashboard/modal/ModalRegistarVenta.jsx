@@ -19,8 +19,6 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
     const { register, handleSubmit, watch, reset } = useForm({
         defaultValues: {
             fecha: hoy(),
-            precio: 0,
-            cantidad: 0
         }
     })
 
@@ -45,9 +43,7 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
         setListaItems([...listaItems, item])
     }
 
-    const data = watch()
-
-    const pago = watch("abono")
+    const precio = watch("precio")
 
     const obtenerInventario = () => {
         Axios.get(`${url}/obtenerInventario`).then((res) => {
@@ -124,39 +120,45 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
                             <option value="Nathan">Nathan</option>
                         </select>
                     </FormGroup>
-                    <p>Articulos</p>
-                    <div className="tabla-articulos">
+                    <div className="tabla-articulos" style={{ background: "#f1f1f1", padding: "5px", borderRadius: "8px" }}>
                         <div className="container">
                             <div className="row">
-                                <div className="col-3">
+                                <label>Articulos</label>
+                                <Select
+                                    defaultValue={{ label: "Seleccione un articulo", value: "Default" }}
+                                    options={inventario.map(val => {
+                                        return ({ label: val.descripcion, value: val.id })
+                                    }
+                                    )}
+                                    onChange={handelSelectChange}
+                                />
+                            </div>
+                            <div className="row mt-2">
+                                <div className="col-6">
+                                    <label> Cantidad</label>
                                     <input className="form-control"
                                         type="number"
+                                        placeholder="Cantidad"
                                         {...register("cantidad")}
                                     />
                                 </div>
                                 <div className="col-6">
-                                    <Select
-                                        defaultValue={{ label: "Seleccione un articulo", value: "Default" }}
-                                        options={inventario.map(val => {
-                                            return ({ label: val.descripcion, value: val.id })
-                                        }
-                                        )}
-                                        onChange={handelSelectChange}
-                                    />
-                                </div>
-                                <div className="col-3">
+                                    <label> Precio:</label>
+
                                     <input className="form-control"
                                         type="number"
+                                        placeholder="Precio"
                                         {...register("precio")}
                                     />
                                 </div>
                             </div>
-                            <div className="row mt-2">
+                            <div className="row mt-2 mb-2">
                                 <button
                                     className="btn btn-primary btn-large"
-                                    onClick={() => { reset() }}
+                                    onClick={() => { agregarArticulo() }}
                                 > Agregar</button>
                             </div>
+
                         </div>
 
                         {/* TABLA DE ARTICULOS FACTURA */}
@@ -164,19 +166,18 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
                             responsive
                             size="sm"
                         >
-                            <thead>
+                            <thead style={{ borderRadius: "8px" }}>
                                 <tr>
-                                    <th style={{ width: "10%" }}>Cant.</th>
+                                    <th style={{ width: "10%", borderRadius: "8px 0 0 0" }}>Cant.</th>
                                     <th style={{ width: "50%" }}>Articulo </th>
                                     <th style={{ width: "10%" }}>Precio</th>
-                                    <th style={{ width: "10%" }}>Total</th>
-                                    <th style={{ width: "10%" }}>Del</th>
+                                    <th style={{ width: "10%", borderRadius: "0 8px 0 0" }}>Total</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
                                     listaItems.map((val, key) => {
-                                        return <tr key={key}>
+                                        return <tr key={key} onDoubleClickCapture={() => eliminar(val.id)}>
                                             <td>
                                                 {val.cantidad}
                                             </td>
@@ -184,16 +185,10 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
                                                 {val.articulo}
                                             </td>
                                             <td>
-                                                {val.precio}
+                                                {moneda(val.precio)}
                                             </td>
                                             <td>
-                                                {val.cantidad * val.precio}
-                                            </td>
-                                            <td>
-                                                <button
-                                                    className="btn btn-danger"
-                                                    onClick={() => eliminar(val.id)}
-                                                > - </button>
+                                                {moneda(val.cantidad * val.precio)}
                                             </td>
                                         </tr>
                                     })
