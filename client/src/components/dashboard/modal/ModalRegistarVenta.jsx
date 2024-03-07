@@ -16,11 +16,14 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
     const [inventario, setInventario] = useState([])
     const [listaItems, setListaItems] = useState([])
     const [selectItem, setSelectItem] = useState("")
+    const [total, setTotal] = useState(0)
     const { register, handleSubmit, watch, reset } = useForm({
         defaultValues: {
             fecha: hoy(),
         }
     })
+
+    const pago = watch("abono")
 
     const eliminar = itemId => {
         const filtredData = listaItems.filter(item => item.id !== itemId);
@@ -43,19 +46,21 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
         setListaItems([...listaItems, item])
     }
 
-    const precio = watch("precio")
+    // Sumar los valores
+    const totales = v => {
+        let x = 0;
+        listaItems.map(val => {
+            x = x + (val.cantidad * val.precio);
+        })
+        setTotal(x)
+    }
+
 
     const obtenerInventario = () => {
         Axios.get(`${url}/obtenerInventario`).then((res) => {
             setInventario(res.data)
         }).catch((err) => {
-            notifyError(`Error al obtener inventario: ${err}`);
-        })
-    }
-
-    const articulos = () => {
-        return inventario.map((val) => {
-            return (<option value={val.descripcion}>{val.descripcion}</option>)
+            //    notifyError(`Error al obtener inventario: ${err}`);
         })
     }
 
@@ -69,8 +74,10 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
         }
     }
 
+    obtenerInventario()
+
     useEffect(() => {
-        obtenerInventario()
+        totales(selectItem)
     })
 
     return (<div>
@@ -123,7 +130,7 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
                     <div className="tabla-articulos" style={{ background: "#f1f1f1", padding: "5px", borderRadius: "8px" }}>
                         <div className="container">
                             <div className="row">
-                                <label>Articulos</label>
+                                <label>Articulos: </label>
                                 <Select
                                     defaultValue={{ label: "Seleccione un articulo", value: "Default" }}
                                     options={inventario.map(val => {
@@ -135,7 +142,7 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
                             </div>
                             <div className="row mt-2">
                                 <div className="col-6">
-                                    <label> Cantidad</label>
+                                    <label> Cantidad: </label>
                                     <input className="form-control"
                                         type="number"
                                         placeholder="Cantidad"
@@ -143,7 +150,7 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
                                     />
                                 </div>
                                 <div className="col-6">
-                                    <label> Precio:</label>
+                                    <label> Precio: </label>
 
                                     <input className="form-control"
                                         type="number"
@@ -152,11 +159,11 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
                                     />
                                 </div>
                             </div>
-                            <div className="row mt-2 mb-2">
+                            <div className="row mt-2 mb-2" style={{ padding: "0  calc(var(--bs-gutter-x)* 0.5)", }}>
                                 <button
-                                    className="btn btn-primary btn-large"
+                                    className="btn btn-outline-primary btn-large"
                                     onClick={() => { agregarArticulo() }}
-                                > Agregar</button>
+                                > <i className="bi bi-plus"></i> Agregar</button>
                             </div>
 
                         </div>
@@ -196,7 +203,7 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
 
                             </tbody>
                         </Table>
-                        <div className="mb-2 fs-5 text-end"><b>Total: </b> </div>
+                        <div className="mb-2 fs-5 text-end"><b>Total: {moneda(total)}</b> </div>
 
                         {/*FIN TABLA DE ARTICULOS FACTURA */}
 
@@ -231,6 +238,7 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
                             <option value="mario">Mario</option>
                             <option value="eddy">Eddy</option>
                             <option value="vanesa">Vanesa</option>
+                            <option value="jhoan">Jhoan</option>
                         </select>
                     </FormGroup>
 
@@ -238,12 +246,12 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
 
             </ModalBody>
             <ModalFooter>
-                <span style={{ padding: "0 4px" }} className={`rounded-pill ${/*sum(data) <= pago*/ true ? "text-bg-success" : "text-bg-warning"}`}><i className={`bi ${true ? "bi-check-circle" : "bi-exclamation-circle"}`}> </i></span>
+                <span style={{ padding: "0 4px" }} className={`rounded-pill ${total <= pago ? "text-bg-success" : "text-bg-warning"}`}><i className={`bi ${total <= pago ? "bi-check-circle" : "bi-exclamation-circle"}`}> </i></span>
                 <Button color="outline-danger" onClick={toggle}>
                     <i className="bi bi-x"> </i> Cancelar
                 </Button>
                 <Button color="primary" type="submit" onClick={handleSubmit((data) => {
-                    agregarVenta(data)
+                    agregarVenta(data, listaItems)
                 })}>
                     <i className="bi bi-check"> </i> Guardar
                 </Button>{' '}

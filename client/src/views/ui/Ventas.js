@@ -4,7 +4,7 @@ import {
   Col, Table, Card, CardTitle, CardBody, Button, Input, InputGroupText, InputGroup
 } from "reactstrap";
 import toast, { Toaster } from 'react-hot-toast';
-import { sum, sumArticulos, moneda } from "../../components/dashboard/tools"
+import { sum, moneda } from "../../components/dashboard/tools"
 import { url } from "../../components/dashboard/var.js"
 import ModalRegistrarVenta from "../../components/dashboard/modal/ModalRegistarVenta";
 import ModalFactura from "../../components/dashboard/modal/ModalFactura";
@@ -17,43 +17,23 @@ const Ventas = () => {
 
   const [ventas, setVentas] = useState([])
   const [detallesPagos, setDetallesPago] = useState([])
+  const [detallesArticulos, setDetalleArticulos] = useState([])
   const [detallesFactura, setDetallesFactura] = useState({
     "pago": 0,
     "fecha": "",
-    "items": {
-      "item1": {
-        "precio": 0,
-        "articulo": "",
-        "cantidad": 0
-      },
-      "item2": {
-        "precio": 0,
-        "articulo": "",
-        "cantidad": 0
-      },
-      "item3": {
-        "precio": 0,
-        "articulo": "",
-        "cantidad": 0
-      },
-      "item4": {
-        "precio": 0,
-        "articulo": "",
-        "cantidad": 0
-      },
-      "item5": {
-        "precio": 0,
-        "articulo": "",
-        "cantidad": 0
-      }
-    },
     "metodo": "",
     "almacen": "",
     "factura": 0,
     "nombreRedes": "",
     "redesSociales": false
   })
+  const [total, setTotal] = useState(0)
 
+
+  // Sumar los valores
+  const totales = v => {
+
+  }
 
   //MODAL REGISTRAR VENTA
   const [modalVenta, setModalVenta] = useState(false);
@@ -92,20 +72,18 @@ const Ventas = () => {
   }
 
   // QUERY AGREGAR VENTA
-  const agregarVenta = (data) => {
+  const agregarVenta = (data, listaItems) => {
     Axios.post(`${url}/agregarVenta`, {
       data: data,
       pagos: [{
         "fecha": data.fecha,
         "abono": data.abono,
         "metodo": data.metodo
-      }]
+      }],
+      listaItems: listaItems
     }).then(() => {
       notify("Agregado correctamente");
       toggle()
-      registrarHistorial(
-        "Venta", data.almacen,
-        `Se realizo venta de <b>${data.items.item1.articulo}</b> por un valor de ${data.items.item1.precio}`)
     }).catch((err) => {
       notifyError(`Error al agregar venta: ${err}`);
     })
@@ -115,7 +93,7 @@ const Ventas = () => {
     Axios.get(`${url}/obtenerVentas`).then((res) => {
       setVentas(res.data)
     }).catch((err) => {
-      notifyError(`Error al obtener ventas: ${err}`);
+      //   notifyError(`Error al obtener ventas: ${err}`);
     })
   }
 
@@ -128,11 +106,8 @@ const Ventas = () => {
         position="top-center"
         reverseOrder={false}
         gutter={8}
-        containerClassName=""
-        containerStyle={{}}
         toastOptions={{
           // Define default options
-          className: '',
           duration: 5000,
           success: {
             duration: 3000,
@@ -153,6 +128,7 @@ const Ventas = () => {
         modalFactura={modalFactura}
         toggleFactura={toggleFactura}
         detallesFactura={detallesFactura}
+        detallesArticulos={detallesArticulos}
         ventas={detallesPagos}
         obtenerVentas={obtenerVentas}
       />
@@ -191,10 +167,11 @@ const Ventas = () => {
                 {ventas.map((val, key) => {
                   let venta = JSON.parse(val.venta)
                   let pagos = JSON.parse(val.pagos)
+                  let articulos = JSON.parse(val.articulos)
                   return (<tr key={key}>
                     <th>{venta.fecha}</th>
                     <td>{venta.factura}</td>
-                    <td>{venta.items.item1.articulo}</td>
+                    <td>{articulos[0].articulo}</td>
                     <td>{venta.almacen}</td>
                     <td>
                       {
@@ -204,17 +181,16 @@ const Ventas = () => {
                         })
                       }
                       {
-                        sum(venta) <= totalAbono ?
+                        sum(articulos) <= totalAbono ?
                           <span className="badge text-bg-success rounded-pill"><i className="bi bi-check-circle"> </i>Pago</span> :
                           <span className="badge text-bg-warning rounded-pill"><i className="bi bi-exclamation-circle"> </i>Pendiente</span>
                       }
-                      {
-                        <span style={{ display: "none" }}>{totalAbono = 0}</span>
-                      }
                     </td>
-                    <td>{moneda(sumArticulos(venta.items))}</td>
+                    <td>{
+                      moneda(sum(articulos))
+                    }</td>
                     <td>
-                      <Button color="outline-primary" onClick={() => { toggleFactura(); setDetallesFactura(venta); setDetallesPago(val.pagos) }} size="sm"><i className="bi bi-file-earmark-text"> </i> Detalles</Button>
+                      <Button color="outline-primary" onClick={() => { toggleFactura(); setDetallesFactura(venta); setDetallesPago(val.pagos); setDetalleArticulos(articulos) }} size="sm"><i className="bi bi-file-earmark-text"> </i> Detalles</Button>
                     </td>
                   </tr>
 

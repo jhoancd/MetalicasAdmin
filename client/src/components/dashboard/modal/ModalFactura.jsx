@@ -6,7 +6,7 @@ import ModalDetallePagos from "./ModalDetallePagos";
 import ModalRealizarAbono from "./ModalRealizarAbono";
 import { useEffect, useState } from "react";
 
-export default function Modalfactura({ modalFactura, toggleFactura, detallesFactura, ventas, obtenerVentas }) {
+export default function Modalfactura({ modalFactura, toggleFactura, detallesFactura, ventas, detallesArticulos, obtenerVentas }) {
     let historial;
     let totalAbono = 0;
     let articulos = []
@@ -15,9 +15,9 @@ export default function Modalfactura({ modalFactura, toggleFactura, detallesFact
         historial = []
     } else {
         historial = JSON.parse(ventas)
-        articulos = Object.values(detallesFactura.items)
-
+        // articulos = Object.values(detallesFactura.items)
     }
+
 
     // MODAL PAGOS
     const [modalPagos, setModalPagos] = useState(false);
@@ -57,7 +57,7 @@ export default function Modalfactura({ modalFactura, toggleFactura, detallesFact
                         </div>
                         <div className="col-6 groupText">
                             <span>Estado <br /> <b>{
-                                sum(detallesFactura) <= totalAbono ?
+                                sum(detallesArticulos) <= totalAbono ?
                                     <span className="badge text-bg-success rounded-pill"><i className="bi bi-check-circle"> </i>Pago</span> :
                                     <span className="badge text-bg-warning rounded-pill"><i className="bi bi-exclamation-circle"> </i>Pendiente</span>
                             }</b></span>
@@ -86,20 +86,15 @@ export default function Modalfactura({ modalFactura, toggleFactura, detallesFact
                             </thead>
                             <tbody>
                                 {
-                                    articulos.map((val, key) => {
-                                        if (val.articulos == "") {
-                                            return (<tr>
-                                                <td>Falso</td>
-                                            </tr>)
-                                        } else {
-                                            return (<tr key={key}>
-                                                <td>{val.cantidad}</td>
-                                                <td>{val.articulo}</td>
-                                                <td>{moneda(val.precio)}</td>
-                                                <td>{moneda(val.cantidad * val.precio)}</td>
-                                            </tr>
-                                            )
-                                        }
+
+                                    detallesArticulos.map((val, key) => {
+                                        return (<tr key={key}>
+                                            <td>{val.cantidad}</td>
+                                            <td>{val.articulo}</td>
+                                            <td>{moneda(val.precio)}</td>
+                                            <td>{moneda(val.precio * val.cantidad)}</td>
+                                        </tr>
+                                        )
                                     })
                                 }
 
@@ -112,7 +107,7 @@ export default function Modalfactura({ modalFactura, toggleFactura, detallesFact
                         </div>
                         <div className="row">
                             <div className="col-12 groupText">
-                                <span>Total <br /> <b>{moneda(sum(detallesFactura))}</b></span>
+                                <span>Total <br /> <b>{moneda(sum(detallesArticulos))}</b></span>
                             </div>
                         </div>
                         <div className="row">
@@ -120,7 +115,7 @@ export default function Modalfactura({ modalFactura, toggleFactura, detallesFact
                                 <span>Abono <br /> <b> {moneda(totalAbono)}</b></span>
                             </div>
                             <div className="col-6 groupText">
-                                <span>Pendiente <br /> <b>{moneda(sum(detallesFactura) - totalAbono)}</b></span>
+                                <span>Pendiente <br /> <b>{moneda(sum(detallesArticulos) - totalAbono)}</b></span>
                             </div>
                         </div>
                     </div>
@@ -135,7 +130,7 @@ export default function Modalfactura({ modalFactura, toggleFactura, detallesFact
                     </Button>
                     <div className="btn-group">
                         {
-                            sum(detallesFactura) <= totalAbono ?
+                            sum(detallesArticulos) <= totalAbono ?
                                 <Button color="outline-primary" onClick={togglePagos}>
                                     <i className="bi bi-eye"> </i> Historial
                                 </Button> :

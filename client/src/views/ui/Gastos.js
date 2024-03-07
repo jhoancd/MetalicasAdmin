@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import toast, { Toaster } from 'react-hot-toast';
 import Axios from "axios"
 import Pill from "../../components/dashboard/Pill";
-import {url} from "../../components/dashboard/var.js"
+import { url } from "../../components/dashboard/var.js"
 
 
 
@@ -30,16 +30,13 @@ const Gastos = () => {
     Axios.get(`${url}/obtenerGastos`).then((res) => {
       setGastos(res.data)
     }).catch((err) => {
-      notifyError(`Error al obtener ventas: ${err}`);
+      notifyError(`Error al obtener gastos: ${err}`);
     })
   }
 
   // QUERY AGREGAR GASTOS
   const agregarGasto = (data) => {
-    Axios.post(`${url}/
-    
-    
-    agregarGasto`, {
+    Axios.post(`${url}/agregarGasto`, {
       fecha: data.fecha,
       descripcion: data.descripcion,
       motivo: data.motivo,
