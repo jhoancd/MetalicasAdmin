@@ -27,13 +27,6 @@ const Ventas = () => {
     "nombreRedes": "",
     "redesSociales": false
   })
-  const [total, setTotal] = useState(0)
-
-
-  // Sumar los valores
-  const totales = v => {
-
-  }
 
   //MODAL REGISTRAR VENTA
   const [modalVenta, setModalVenta] = useState(false);
@@ -84,8 +77,20 @@ const Ventas = () => {
     }).then(() => {
       notify("Agregado correctamente");
       toggle()
+      restarInventario(listaItems, data);
+      console.log(data.almacen)
     }).catch((err) => {
       notifyError(`Error al agregar venta: ${err}`);
+    })
+  }
+
+  // QUERY RESTAR INVENTARIO DESPUES DE VENTA
+  const restarInventario = (listaItems, data) => {
+    Axios.put(`${url}/restarInventario`, {
+      listaItems: listaItems,
+      almacen: data.almacen
+    }).catch((err) => {
+      notifyError(`Error al eliminar inventario: ${err}`);
     })
   }
 
@@ -96,6 +101,7 @@ const Ventas = () => {
       //   notifyError(`Error al obtener ventas: ${err}`);
     })
   }
+
 
   useEffect(() => {
     obtenerVentas()

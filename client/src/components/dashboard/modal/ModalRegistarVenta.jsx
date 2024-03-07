@@ -122,9 +122,9 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
                         <select className="form-control" type="select" {...register("almacen")}
                         >
                             <option>Selecionar almacen</option>
-                            <option value="Danfel">Danfel</option>
-                            <option value="DyF">DyF</option>
-                            <option value="Nathan">Nathan</option>
+                            <option value="danfel">Danfel</option>
+                            <option value="dyf">DyF</option>
+                            <option value="nathan">Nathan</option>
                         </select>
                     </FormGroup>
                     <div className="tabla-articulos" style={{ background: "#f1f1f1", padding: "5px", borderRadius: "8px" }}>
@@ -252,6 +252,7 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
                 </Button>
                 <Button color="primary" type="submit" onClick={handleSubmit((data) => {
                     agregarVenta(data, listaItems)
+                    reset()
                 })}>
                     <i className="bi bi-check"> </i> Guardar
                 </Button>{' '}
