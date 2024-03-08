@@ -33,15 +33,13 @@ const SalesChart = () => {
     colors: ["#0d6efd", "#009efb", "#6771dc"],
     xaxis: {
       categories: [
-        "Jan",
-        "Feb",
+        "Lun",
         "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
+        "Mie",
+        "Jue",
+        "Vie",
+        "Sab",
+
       ],
     },
     responsive: [
@@ -60,53 +58,24 @@ const SalesChart = () => {
   };
   const series = [
     {
-      name: "2020",
-      data: [20, 40, 50, 30, 40, 50, 30, 30, 40],
+      name: "Dyf",
+      data: [20, 40, 50, 30, 40, 50],
     },
     {
-      name: "2022",
-      data: [10, 20, 40, 60, 20, 40, 50, 60, 20],
+      name: "Nathan",
+      data: [10, 20, 40, 60, 20, 40],
+    },
+    {
+      name: "Danfel",
+      data: [70, 25, 20, 80, 60, 40],
     },
   ];
 
   const [listVentas, setListVentas] = useState(ventas)
-  console.log(listVentas)
 
 
   return (
-    <Card>
-      <CardBody>
-        <CardTitle tag="h5">Resumen de ventas</CardTitle>
-        <CardSubtitle className="text-muted" tag="h6">
-          Ventas totales
-        </CardSubtitle>
-        <div className="bg-primary text-white my-3 p-3 rounded">
-          <Row>
-            <div className="input-group mb-3">
-              <span className="input-group-text">Desde</span>
-              <input type="date" className="form-control" />
-              <span className="input-group-text">Hasta</span>
-              <input type="date" value={hoy()} className="form-control" />
-            </div>
-          </Row>
-          <Row>
-            <Col md="4">
-              <h6>Ventas totales</h6>
-              <h4 className="mb-0 fw-bold">$10,345</h4>
-            </Col>
-            <Col md="4">
-              <h6>Hoy</h6>
-              <h4 className="mb-0 fw-bold">$7,545</h4>
-            </Col>
-            <Col md="4">
-              <h6>Gastos</h6>
-              <h4 className="mb-0 fw-bold">$1,345</h4>
-            </Col>
-          </Row>
-        </div>
-        <Chart options={options} series={series} type="area" height="279" />
-      </CardBody>
-    </Card>
+    <Chart options={options} series={series} type="area" height="279" />
   );
 };
 

@@ -28,16 +28,16 @@ const navigation = [
     icon: "bi bi-arrow-down",
   },
   {
-    title: "Prestamos",
-    href: "/Prestamos",
-    icon: "bi bi-bank",
+    title: "Informes",
+    href: "/Informes",
+    icon: "bi bi-file-earmark-text",
   },
-  {
-    title: "Table",
-    href: "/table",
-    icon: "bi bi-layout-split",
-  },
-  {
+  /* {
+     title: "Prestamos",
+     href: "/Prestamos",
+     icon: "bi bi-bank",
+   },
+   {
     title: "Forms",
     href: "/forms",
     icon: "bi bi-textarea-resize",
@@ -51,7 +51,7 @@ const navigation = [
     title: "About",
     href: "/about",
     icon: "bi bi-people",
-  },
+  },*/
 ];
 
 const Sidebar = () => {

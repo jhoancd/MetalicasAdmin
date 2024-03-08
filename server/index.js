@@ -109,23 +109,21 @@ app.post("/agregarVenta", (req, res) => {
 })
 
 // Restar inventario de la venta
-app.put("/restarInventario", (req, res) => {
+app.put("/restarInventario", async (req, res) => {
     const listaItems = req.body.listaItems
     const almacen = req.body.almacen
 
-    listaItems.map(val => {
+    await listaItems.map(val => {
         db.query(`UPDATE inventario SET ${almacen} = ${almacen} - ${parseInt(val.cantidad)}  WHERE id=${val.id}`,
             (err, resul) => {
                 if (err) {
                     console.log(err)
                 } else {
-                    res.send(resul)
+                    // res.send(resul)
                 }
             }
         )
     })
-
-
 })
 
 // Agregar Abono
