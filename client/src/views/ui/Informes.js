@@ -1,7 +1,59 @@
-import ProjectTables from "../../components/dashboard/ProjectTable";
+import { url } from "../../components/dashboard/var";
+import { sum } from "../../components/dashboard/tools";
 import { Row, Col, Table, Card, CardTitle, CardBody } from "reactstrap";
+import { useEffect, useState } from "react";
+import Axios from "axios"
+
 
 const Informes = () => {
+
+  const [ventas, setVentas] = useState([])
+  const [gastos, setGastos] = useState([])
+  const [ventasAlmacen, setVentasAlmacen] = useState([])
+  const [fechaInicio, setFechaInicio] = useState()
+  const [fechaFin, setFechaFin] = useState()
+  let array = [];
+
+  const ventasBrutas = (almacen) => {
+    array.push(ventas.map((val) => {
+      const articulos = JSON.parse(val.articulos)
+      const ventas = JSON.parse(val.venta)
+      if (ventas.almacen == almacen) {
+        return sum(articulos)
+      }
+    }))
+
+    return array.reduce((acc, val) => acc + parseInt(val), 0)
+  }
+
+
+  // QUERY OBTENER VENTAS
+  const obtenerVentas = () => {
+    Axios.get(`${url}/obtenerVentas`).then((res) => {
+      setVentas(res.data)
+    }).catch((err) => {
+      //   notifyError(`Error al obtener ventas: ${err}`);
+    })
+  }
+
+  // QUERY OBTENER GASTOS
+  const obtenerGastos = () => {
+    Axios.get(`${url}/obtenerGastos`).then((res) => {
+      setGastos(res.data)
+    }).catch((err) => {
+      console.log(`Error al obtener gastos: ${err}`);
+    })
+  }
+
+  const venta = (Almacen) => {
+    // ventas
+  }
+
+  useEffect(() => {
+    obtenerGastos();
+    obtenerVentas()
+  })
+
   return (
     <Row>
 
@@ -12,9 +64,29 @@ const Informes = () => {
             Informe
           </CardTitle>
           <CardBody className="">
-            <Table bordered>
+            <Row>
+              <div class="col-md-3">
+                <label forHtml="dateStart" class="form-label">Inicio</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="dateStart"
+                  onChange={(e) => setFechaInicio(e.target.value)}
+                />
+              </div>
+              <div class="col-md-3">
+                <label for="dateEnd" class="form-label">Fin</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="dateEnd"
+                  onChange={(e) => setFechaFin(e.target.value)} />
+              </div>
+            </Row>
+            <Table bordered className="mt-2">
               <thead>
                 <tr>
+                  <th>Almacen</th>
                   <th>Venta</th>
                   <th>Abonos</th>
                   <th>Pendientes</th>
@@ -24,22 +96,31 @@ const Informes = () => {
               </thead>
               <tbody>
                 <tr>
-                  <th scope="row">1</th>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
+                  <td>Danfel</td>
+                  <td>
+                    {
+                      ventasBrutas("dyf")
+                    }
+                  </td>
+                  <td>$7.800.000</td>
+                  <td>$5.300.000</td>
+                  <td>$1.300.000</td>
+                  <td>$700.000</td>
                 </tr>
                 <tr>
-                  <th scope="row">2</th>
-                  <td>Jacob</td>
-                  <td>Thornton</td>
-                  <td>@fat</td>
-                </tr>
-                <tr>
-                  <th scope="row">3</th>
-                  <td>Larry</td>
-                  <td>the Bird</td>
-                  <td>@twitter</td>
+                  <td>DyF</td>
+                  <td>$12.250.000</td>
+                  <td>$7.800.000</td>
+                  <td>$5.300.000</td>
+                  <td>$1.300.000</td>
+                  <td>$700.000</td>
+                </tr>                <tr>
+                  <td>Nathan</td>
+                  <td>$12.250.000</td>
+                  <td>$7.800.000</td>
+                  <td>$5.300.000</td>
+                  <td>$1.300.000</td>
+                  <td>$700.000</td>
                 </tr>
               </tbody>
             </Table>
