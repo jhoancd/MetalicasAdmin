@@ -12,19 +12,19 @@ const Informes = () => {
   const [ventasAlmacen, setVentasAlmacen] = useState([])
   const [fechaInicio, setFechaInicio] = useState()
   const [fechaFin, setFechaFin] = useState()
-  let array = [];
+
+  const dataVentas = ventas.map((val) => {
+    const ventas = JSON.parse(val.venta)
+    return ventas;
+  })
+
 
   const ventasBrutas = (almacen) => {
-    array.push(ventas.map((val) => {
-      const articulos = JSON.parse(val.articulos)
-      const ventas = JSON.parse(val.venta)
-      if (ventas.almacen == almacen) {
-        return sum(articulos)
-      }
-    }))
 
-    return array.reduce((acc, val) => acc + parseInt(val), 0)
   }
+
+
+  console.log(dataVentas)
 
 
   // QUERY OBTENER VENTAS
@@ -32,7 +32,7 @@ const Informes = () => {
     Axios.get(`${url}/obtenerVentas`).then((res) => {
       setVentas(res.data)
     }).catch((err) => {
-      //   notifyError(`Error al obtener ventas: ${err}`);
+      //notifyError(`Error al obtener ventas: ${err}`);
     })
   }
 
@@ -43,10 +43,6 @@ const Informes = () => {
     }).catch((err) => {
       console.log(`Error al obtener gastos: ${err}`);
     })
-  }
-
-  const venta = (Almacen) => {
-    // ventas
   }
 
   useEffect(() => {
@@ -99,7 +95,6 @@ const Informes = () => {
                   <td>Danfel</td>
                   <td>
                     {
-                      ventasBrutas("dyf")
                     }
                   </td>
                   <td>$7.800.000</td>
