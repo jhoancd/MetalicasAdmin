@@ -65,7 +65,8 @@ const Ventas = () => {
   }
 
   // QUERY AGREGAR VENTA
-  const agregarVenta = (data, listaItems) => {
+  const agregarVenta = (data, listaItems, total) => {
+    data.total = total
     Axios.post(`${url}/agregarVenta`, {
       data: data,
       pagos: [{
@@ -73,7 +74,8 @@ const Ventas = () => {
         "abono": data.abono,
         "metodo": data.metodo
       }],
-      listaItems: listaItems
+      listaItems: listaItems,
+      total: total
     }).then(() => {
       notify("Agregado correctamente");
       toggle()

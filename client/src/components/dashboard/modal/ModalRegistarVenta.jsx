@@ -251,7 +251,7 @@ export default function ModalRegistrarVenta({ modalVenta, toggle, agregarVenta }
                     <i className="bi bi-x"> </i> Cancelar
                 </Button>
                 <Button color="primary" type="submit" onClick={handleSubmit((data) => {
-                    agregarVenta(data, listaItems)
+                    agregarVenta(data, listaItems, total)
                     reset()
                 })}>
                     <i className="bi bi-check"> </i> Guardar

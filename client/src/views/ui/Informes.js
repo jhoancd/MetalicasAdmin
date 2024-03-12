@@ -1,5 +1,5 @@
 import { url } from "../../components/dashboard/var";
-import { sum } from "../../components/dashboard/tools";
+import { moneda, hoy } from "../../components/dashboard/tools";
 import { Row, Col, Table, Card, CardTitle, CardBody } from "reactstrap";
 import { useEffect, useState } from "react";
 import Axios from "axios"
@@ -19,12 +19,18 @@ const Informes = () => {
   })
 
 
-  const ventasBrutas = (almacen) => {
+  //dataVentas = dataVentas.filter(val => val.fecha >= hoy() && val.fecha <= hoy())
 
+  const ventasBrutas = (almacen) => {
+    // Primero filtro las ventas por almacen
+    // depues con el filter sumo los totales
+    let total = 0;
+    total = dataVentas.filter(val => val.almacen == almacen)
+      .reduce((acc, val) => acc + val.total, 0)
+
+    return moneda(total)
   }
 
-
-  console.log(dataVentas)
 
 
   // QUERY OBTENER VENTAS
@@ -61,20 +67,20 @@ const Informes = () => {
           </CardTitle>
           <CardBody className="">
             <Row>
-              <div class="col-md-3">
-                <label forHtml="dateStart" class="form-label">Inicio</label>
+              <div className="col-md-3">
+                <label forHtml="dateStart" className="form-label">Inicio</label>
                 <input
                   type="date"
-                  class="form-control"
+                  className="form-control"
                   id="dateStart"
                   onChange={(e) => setFechaInicio(e.target.value)}
                 />
               </div>
-              <div class="col-md-3">
-                <label for="dateEnd" class="form-label">Fin</label>
+              <div className="col-md-3">
+                <label forHtml="dateEnd" className="form-label">Fin</label>
                 <input
                   type="date"
-                  class="form-control"
+                  className="form-control"
                   id="dateEnd"
                   onChange={(e) => setFechaFin(e.target.value)} />
               </div>
@@ -93,9 +99,7 @@ const Informes = () => {
               <tbody>
                 <tr>
                   <td>Danfel</td>
-                  <td>
-                    {
-                    }
+                  <td>{ventasBrutas("danfel")}
                   </td>
                   <td>$7.800.000</td>
                   <td>$5.300.000</td>
@@ -104,14 +108,14 @@ const Informes = () => {
                 </tr>
                 <tr>
                   <td>DyF</td>
-                  <td>$12.250.000</td>
+                  <td>{ventasBrutas("dyf")}</td>
                   <td>$7.800.000</td>
                   <td>$5.300.000</td>
                   <td>$1.300.000</td>
                   <td>$700.000</td>
                 </tr>                <tr>
                   <td>Nathan</td>
-                  <td>$12.250.000</td>
+                  <td>{ventasBrutas("nathan")}</td>
                   <td>$7.800.000</td>
                   <td>$5.300.000</td>
                   <td>$1.300.000</td>
