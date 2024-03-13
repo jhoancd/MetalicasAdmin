@@ -13,24 +13,40 @@ const Informes = () => {
   const [fechaInicio, setFechaInicio] = useState()
   const [fechaFin, setFechaFin] = useState()
 
-  const dataVentas = ventas.map((val) => {
-    const ventas = JSON.parse(val.venta)
-    return ventas;
-  })
 
+  // // 1. Mapeo el array y obtengo la columna de ventas
+  // // 2. Filtro el mismo array entre un rango de fechas
+  // let dataVentas = ventas.map((val) => {
+  //   const ventas = JSON.parse(val.venta)
+  //   return ventas;
+  // }).filter(val => val.fecha >= hoy() && val.fecha <= hoy())
 
-  //dataVentas = dataVentas.filter(val => val.fecha >= hoy() && val.fecha <= hoy())
+  const dataVentas = (fechaInicio, fechaFin, data) => {
+    let dataFilter = [];
+    dataFilter = ventas.map((val) => {
+      const ventas = JSON.parse(val.venta)
+      const pagos = JSON.parse(val.pagos)
+      if (data == "ventas") {
+        return ventas
+      } else if (data == "pagos") {
+        return pagos
+      }
+    })
 
-  const ventasBrutas = (almacen) => {
-    // Primero filtro las ventas por almacen
-    // depues con el filter sumo los totales
-    let total = 0;
-    total = dataVentas.filter(val => val.almacen == almacen)
-      .reduce((acc, val) => acc + val.total, 0)
+    dataFilter = dataFilter.filter(val => val.fecha >= fechaInicio && val.fecha <= fechaFin)
+    return dataFilter
 
-    return moneda(total)
   }
 
+
+  // 1. Filtro las ventas por almacen
+  // 2. Con el reduce sumo los totales
+  const ventasBrutas = (almacen) => {
+    let total = 0;
+    total = dataVentas(hoy(), hoy(), "ventas").filter(val => val.almacen == almacen)
+      .reduce((acc, val) => acc + val.total, 0)
+    return moneda(total)
+  }
 
 
   // QUERY OBTENER VENTAS
@@ -85,11 +101,11 @@ const Informes = () => {
                   onChange={(e) => setFechaFin(e.target.value)} />
               </div>
             </Row>
-            <Table bordered className="mt-2">
+            <Table bordered striped className="mt-2">
               <thead>
                 <tr>
                   <th>Almacen</th>
-                  <th>Venta</th>
+                  <th>Venta Neta</th>
                   <th>Abonos</th>
                   <th>Pendientes</th>
                   <th>Transferencia</th>
@@ -99,27 +115,28 @@ const Informes = () => {
               <tbody>
                 <tr>
                   <td>Danfel</td>
-                  <td>{ventasBrutas("danfel")}
+                  <td>{console.log(dataVentas(hoy(), hoy(), "ventas"))/*ventasBrutas("danfel")*/}
                   </td>
-                  <td>$7.800.000</td>
-                  <td>$5.300.000</td>
-                  <td>$1.300.000</td>
-                  <td>$700.000</td>
+                  <td>$0</td>
+                  <td>$0</td>
+                  <td>$0</td>
+                  <td>$0</td>
                 </tr>
                 <tr>
                   <td>DyF</td>
                   <td>{ventasBrutas("dyf")}</td>
-                  <td>$7.800.000</td>
-                  <td>$5.300.000</td>
-                  <td>$1.300.000</td>
-                  <td>$700.000</td>
-                </tr>                <tr>
+                  <td>$0</td>
+                  <td>$0</td>
+                  <td>$0</td>
+                  <td>$0</td>
+                </tr>
+                <tr>
                   <td>Nathan</td>
                   <td>{ventasBrutas("nathan")}</td>
-                  <td>$7.800.000</td>
-                  <td>$5.300.000</td>
-                  <td>$1.300.000</td>
-                  <td>$700.000</td>
+                  <td>$0</td>
+                  <td>$0</td>
+                  <td>$0</td>
+                  <td>$0</td>
                 </tr>
               </tbody>
             </Table>
