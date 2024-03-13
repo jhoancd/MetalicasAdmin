@@ -24,5 +24,23 @@ const hoy = (v) => {
     return hoy;
 }
 
+const lunes = () => {
+    const fechaActual = new Date();
 
-export { sum, moneda, hoy }
+    // Obtener el día de la semana (0 para Domingo, 1 para Lunes, ..., 6 para Sábado)
+    let diaSemana = fechaActual.getDay();
+
+    // Retroceder hasta llegar al lunes (si hoy es lunes, no retroceder)
+    if (diaSemana !== 1) { // Si no es lunes
+        // Calcular cuántos días retroceder
+        const diasARetroceder = (diaSemana === 0) ? 6 : diaSemana - 1;
+        // Restar los días necesarios para llegar al lunes
+        fechaActual.setDate(fechaActual.getDate() - diasARetroceder);
+    }
+
+    // Convertir la fecha en formato yyyy-MM-dd
+    return fechaActual.toISOString().split('T')[0]
+}
+
+
+export { sum, moneda, hoy, lunes }

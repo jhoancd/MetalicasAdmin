@@ -1,8 +1,8 @@
 import { url } from "../../components/dashboard/var";
-import { moneda, hoy } from "../../components/dashboard/tools";
+import { moneda, hoy, lunes } from "../../components/dashboard/tools";
 import { Row, Col, Table, Card, CardTitle, CardBody } from "reactstrap";
 import { useEffect, useState } from "react";
-import Axios from "axios"
+import Axios, { all } from "axios"
 
 
 const Informes = () => {
@@ -10,43 +10,47 @@ const Informes = () => {
   const [ventas, setVentas] = useState([])
   const [gastos, setGastos] = useState([])
   const [ventasAlmacen, setVentasAlmacen] = useState([])
-  const [fechaInicio, setFechaInicio] = useState()
-  const [fechaFin, setFechaFin] = useState()
+  const [fechaInicio, setFechaInicio] = useState(lunes())
+  const [fechaFin, setFechaFin] = useState(hoy())
 
 
-  // // 1. Mapeo el array y obtengo la columna de ventas
-  // // 2. Filtro el mismo array entre un rango de fechas
-  // let dataVentas = ventas.map((val) => {
-  //   const ventas = JSON.parse(val.venta)
-  //   return ventas;
-  // }).filter(val => val.fecha >= hoy() && val.fecha <= hoy())
+  // 1. Mapeo el array y obtengo la columna de ventas
+  // 2. Filtro el mismo array entre un rango de fechas
+  let dataVentas = ventas.map((val) => {
+    const ventas = JSON.parse(val.venta)
+    return ventas;
+  }).filter(val => val.fecha >= fechaInicio && val.fecha <= fechaFin)
 
-  const dataVentas = (fechaInicio, fechaFin, data) => {
-    let dataFilter = [];
-    dataFilter = ventas.map((val) => {
+  const dataAbonos = (almacen) => {
+    let data = ventas.reduce((acc, val) => {
       const ventas = JSON.parse(val.venta)
-      const pagos = JSON.parse(val.pagos)
-      if (data == "ventas") {
-        return ventas
-      } else if (data == "pagos") {
-        return pagos
+      const abonos = JSON.parse(val.abonos)
+      if (ventas.almacen == almacen) {
+        acc.push(abonos)
       }
-    })
+    }, [])
 
-    dataFilter = dataFilter.filter(val => val.fecha >= fechaInicio && val.fecha <= fechaFin)
-    return dataFilter
-
+    return data
   }
 
+  //.filter(val => val.fecha >= fechaInicio && val.fecha <= fechaFin)
+
+
+  console.log(dataAbonos("nathan"))
 
   // 1. Filtro las ventas por almacen
   // 2. Con el reduce sumo los totales
   const ventasBrutas = (almacen) => {
     let total = 0;
-    total = dataVentas(hoy(), hoy(), "ventas").filter(val => val.almacen == almacen)
+    total = dataVentas.filter(val => val.almacen == almacen)
       .reduce((acc, val) => acc + val.total, 0)
     return moneda(total)
   }
+
+  // const abonosEfectivo = (almacen) => {
+  //   let total = 0;
+  //   total = dataAbonos
+  // }
 
 
   // QUERY OBTENER VENTAS
@@ -66,7 +70,6 @@ const Informes = () => {
       console.log(`Error al obtener gastos: ${err}`);
     })
   }
-
   useEffect(() => {
     obtenerGastos();
     obtenerVentas()
@@ -89,6 +92,7 @@ const Informes = () => {
                   type="date"
                   className="form-control"
                   id="dateStart"
+                  value={fechaInicio}
                   onChange={(e) => setFechaInicio(e.target.value)}
                 />
               </div>
@@ -98,6 +102,7 @@ const Informes = () => {
                   type="date"
                   className="form-control"
                   id="dateEnd"
+                  value={fechaFin}
                   onChange={(e) => setFechaFin(e.target.value)} />
               </div>
             </Row>
@@ -115,7 +120,7 @@ const Informes = () => {
               <tbody>
                 <tr>
                   <td>Danfel</td>
-                  <td>{console.log(dataVentas(hoy(), hoy(), "ventas"))/*ventasBrutas("danfel")*/}
+                  <td>{(ventasBrutas("danfel"))}
                   </td>
                   <td>$0</td>
                   <td>$0</td>
