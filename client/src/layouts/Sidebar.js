@@ -27,31 +27,31 @@ const navigation = [
     href: "/gastos",
     icon: "bi bi-arrow-down",
   },
-  {
-    title: "Informes",
-    href: "/Informes",
-    icon: "bi bi-file-earmark-text",
-  },
   /* {
-     title: "Prestamos",
-     href: "/Prestamos",
-     icon: "bi bi-bank",
+     title: "Informes",
+     href: "/Informes",
+     icon: "bi bi-file-earmark-text",
+   },
+    {
+      title: "Prestamos",
+      href: "/Prestamos",
+      icon: "bi bi-bank",
+    },
+    {
+     title: "Forms",
+     href: "/forms",
+     icon: "bi bi-textarea-resize",
    },
    {
-    title: "Forms",
-    href: "/forms",
-    icon: "bi bi-textarea-resize",
-  },
-  {
-    title: "Breadcrumbs",
-    href: "/breadcrumbs",
-    icon: "bi bi-link",
-  },
-  {
-    title: "About",
-    href: "/about",
-    icon: "bi bi-people",
-  },*/
+     title: "Breadcrumbs",
+     href: "/breadcrumbs",
+     icon: "bi bi-link",
+   },
+   {
+     title: "About",
+     href: "/about",
+     icon: "bi bi-people",
+   },*/
 ];
 
 const Sidebar = () => {
@@ -60,13 +60,18 @@ const Sidebar = () => {
   };
   let location = useLocation();
 
+  const tempReload = () => {
+    setTimeout(() => {
+      window.location.reload();
+    }, 1); // 
+  };
   return (
     <div className="bg-dark">
       <div className="d-flex">
         <Button
           color="white"
           className="ms-auto text-white d-lg-none"
-          onClick={() => showMobilemenu()}
+          onClick={() => { showMobilemenu(); tempReload() }}
         >
           <i className="bi bi-x"></i>
         </Button>
@@ -83,7 +88,7 @@ const Sidebar = () => {
                     : "nav-link py-3"
                 }
 
-                onClick={() => showMobilemenu()}
+                onClick={() => { showMobilemenu(); tempReload() }}
               >
                 <i className={navi.icon}></i>
                 <span className="ms-3 d-inline-block">{navi.title}</span>

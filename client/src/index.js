@@ -3,16 +3,16 @@ import "./assets/scss/style.scss";
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 import Loader from "./layouts/loader/Loader";
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Suspense fallback={<Loader />}>
-    <Router>
+    <HashRouter >
       <App />
-    </Router>
+    </HashRouter >
   </Suspense>
 );
 
