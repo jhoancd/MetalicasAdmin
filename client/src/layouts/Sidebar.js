@@ -3,9 +3,9 @@ import { Link, useLocation } from "react-router-dom";
 
 const navigation = [
   {
-    title: "Dashboard",
-    href: "/starter",
-    icon: "bi bi-speedometer2",
+    title: "Inicio",
+    href: "/inicio",
+    icon: "bi bi-house",
   },
   {
     title: "Inventario",
@@ -76,7 +76,7 @@ const Sidebar = () => {
           {navigation.map((navi, index) => (
             <NavItem key={index} className="sidenav-bg">
               <Link
-                to={navi.href}
+                to={{ pathname: navi.href }}
                 className={
                   location.pathname === navi.href
                     ? "active nav-link py-3"

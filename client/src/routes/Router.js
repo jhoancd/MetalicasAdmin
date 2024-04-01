@@ -6,7 +6,7 @@ const FullLayout = lazy(() => import("../layouts/FullLayout.js"));
 
 /***** Pages ****/
 
-const Starter = lazy(() => import("../views/Starter.js"));
+const Inicio = lazy(() => import("../views/Inicio.js"));
 const About = lazy(() => import("../views/About.js"));
 const Inventario = lazy(() => import("../views/ui/Inventario.js"));
 const Ventas = lazy(() => import("../views/ui/Ventas.js"));
@@ -24,8 +24,8 @@ const ThemeRoutes = [
     path: "/",
     element: <FullLayout />,
     children: [
-      { path: "/", element: <Navigate to="/starter" /> },
-      { path: "/starter", exact: true, element: <Starter /> },
+      { path: "/", element: <Navigate to="/Inicio" /> },
+      { path: "/inicio", exact: true, element: <Inicio /> },
       { path: "/about", exact: true, element: <About /> },
       { path: "/inventario", exact: true, element: <Inventario /> },
       { path: "/ventas", exact: true, element: <Ventas /> },

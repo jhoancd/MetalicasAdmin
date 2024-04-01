@@ -45,7 +45,7 @@ const BlogData = [
   },
 ];
 
-const Starter = () => {
+const Inicio = () => {
   return (
     <div>
       {/***Top Cards***/}
@@ -90,4 +90,4 @@ const Starter = () => {
   );
 };
 
-export default Starter;
+export default Inicio;
