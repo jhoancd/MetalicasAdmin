@@ -60,18 +60,18 @@ const Sidebar = () => {
   };
   let location = useLocation();
 
-  const tempReload = () => {
-    setTimeout(() => {
-      window.location.reload();
-    }, 1); // 
-  };
+  // const tempReload = () => {
+  //   setTimeout(() => {
+  //     window.location.reload();
+  //   }, 1); // 
+  // };
   return (
     <div className="bg-dark">
       <div className="d-flex">
         <Button
           color="white"
           className="ms-auto text-white d-lg-none"
-          onClick={() => { showMobilemenu(); tempReload() }}
+          onClick={() => { showMobilemenu(); /*tempReload() */ }}
         >
           <i className="bi bi-x"></i>
         </Button>
@@ -88,7 +88,7 @@ const Sidebar = () => {
                     : "nav-link py-3"
                 }
 
-                onClick={() => { showMobilemenu(); tempReload() }}
+                onClick={() => { showMobilemenu();/* tempReload()*/ }}
               >
                 <i className={navi.icon}></i>
                 <span className="ms-3 d-inline-block">{navi.title}</span>
